@@ -1,6 +1,6 @@
 {
   "name": "@andrewcaires/sample-api",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple api for small applications using express, jsonwebtoken, sequelize and websocket",
   "main": "dist/index.js",
   "scripts": {
@@ -12,11 +12,18 @@
     "url": "git+https://github.com/andrewcaires/sample-api.git"
   },
   "keywords": [
+    "app",
     "api",
+    "auth",
     "express",
     "jsonwebtoken",
+    "permissions",
+    "routes",
     "sequelize",
-    "websocket"
+    "token",
+    "validations",
+    "websocket",
+    "web"
   ],
   "author": "Andrew Caires",
   "license": "MIT",
