@@ -9,7 +9,7 @@ export class Responses {
 
     static data(res: Response, message: string, data: any) {
 
-        return res.status(200).json({status: 2, message, data});
+        return res.status(200).json({status: 1, message, data});
     }
 
     static error(res: Response, message: string) {
@@ -24,7 +24,7 @@ export class Responses {
 
     static validation(res: Response, message: string, data: any) {
 
-        return res.status(400).json({status: 2, message, data});
+        return res.status(400).json({status: 0, message, data});
     }
 
     static unauthorized(res: Response, message: string) {
