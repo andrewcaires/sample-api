@@ -1,0 +1,22 @@
+# system files
+.DS_Store
+Thumbs.db
+
+# compiled output
+dist
+
+# dependency directories
+node_modules
+
+# dotenv environment
+.env
+
+# logs
+logs
+*.log
+
+# npm cache directory
+.npm
+
+# vscode
+.vscode
