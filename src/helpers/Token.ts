@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import { Utils } from '../helpers/Utils';
 
-import { API_TOKEN_TIME } from "../bin/config";
+import { API_TOKEN_LIFETIME } from "../bin/config";
 import { User } from "../bin/models";
 import { crt, key } from '../bin/ssl';
 
@@ -73,7 +73,7 @@ export class Token {
                             return resolve({error: 'Access denied'});
                         }
 
-                        user.timestamp = time + ( API_TOKEN_TIME * 60000 );
+                        user.timestamp = time + ( API_TOKEN_LIFETIME * 60000 );
 
                         user.save();
 
@@ -113,7 +113,7 @@ export class Token {
                 if (!err && token) {
 
                     user.secret = data.secret;
-                    user.timestamp = time + ( API_TOKEN_TIME * 60000 );
+                    user.timestamp = time + ( API_TOKEN_LIFETIME * 60000 );
 
                     user.save();
 

@@ -23,6 +23,6 @@ export const API_HTTP_CROSS = toBool(process.env.API_HTTP_CROSS || 'false');
 
 export const API_TOKEN_CRT = process.env.API_TOKEN_CRT!;
 export const API_TOKEN_KEY = process.env.API_TOKEN_KEY!;
-export const API_TOKEN_TIME = parseInt(process.env.API_TOKEN_TIME || '15');
+export const API_TOKEN_LIFETIME = parseInt(process.env.API_TOKEN_LIFETIME || '15');
 
 export const API_WEBSOCKET_START = toBool(process.env.API_WEBSOCKET_START || 'false');
