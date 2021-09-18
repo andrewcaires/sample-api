@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 import { Utils } from '../helpers/Utils';
 
-import { API_TOKEN_SECRET, API_TOKEN_TIME } from "../bin/config";
+import { API_TOKEN_TIME } from "../bin/config";
 import { User } from "../bin/models";
 import { crt, key } from '../bin/ssl';
 
@@ -33,14 +33,12 @@ export class Token {
             const date = new Date();
             const time = date.getTime();
 
-            const secret = crt ? crt : API_TOKEN_SECRET;
-
-            if (!secret) {
+            if (!crt.token) {
 
                 return resolve({error: 'Invalid Secret'});
             }
 
-            jwt.verify(token, secret, (err, decoded) => {
+            jwt.verify(token, crt.token, (err, decoded) => {
     
                 if (err) {
 
@@ -105,14 +103,12 @@ export class Token {
             const date = new Date();
             const time = date.getTime();
 
-            const secret = key ? key : API_TOKEN_SECRET;
-
-            if (!secret) {
+            if (!key.token) {
 
                 return resolve('');
             }
 
-            jwt.sign(data, secret, {algorithm: 'RS256'}, (err, token) => {
+            jwt.sign(data, key.token, {algorithm: 'RS256'}, (err, token) => {
 
                 if (!err && token) {
 

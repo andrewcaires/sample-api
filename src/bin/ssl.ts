@@ -1,22 +1,21 @@
 import { existsSync, readFileSync } from 'fs';
 
-import { API_SSL_CRT, API_SSL_KEY } from './config';
+import { API_HTTP_CRT, API_HTTP_KEY, API_TOKEN_CRT, API_TOKEN_KEY } from './config';
 
-const getCrt = (): Buffer | undefined => {
+const getFile = (file: string): Buffer | undefined => {
 
-    if (existsSync(API_SSL_CRT)) {
+    if (existsSync(file)) {
 
-        return readFileSync(API_SSL_CRT);
+        return readFileSync(file);
     }
 }
 
-const getKey = (): Buffer | undefined => {
+export const crt = {
+    http: getFile(API_HTTP_CRT),
+    token: getFile(API_TOKEN_CRT)
+};
 
-    if (existsSync(API_SSL_KEY)) {
-
-        return readFileSync(API_SSL_KEY);
-    }
-}
-
-export const crt = getCrt();
-export const key = getKey();
+export const key = {
+    http: getFile(API_HTTP_KEY),
+    token: getFile(API_TOKEN_KEY)
+};

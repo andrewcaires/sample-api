@@ -20,12 +20,12 @@ app.disable('x-powered-by');
 
 const createServer = () => {
 
-    if (!crt || !key) {
+    if (!crt.http || !key.http) {
 
         return http.createServer(app);
     }
 
-    return https.createServer({ key, cert: crt }, app);
+    return https.createServer({ key: key.http, cert: crt.http }, app);
 }
 
 export const listen = (): void => {
