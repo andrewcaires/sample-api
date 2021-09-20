@@ -6,7 +6,7 @@ import { Log } from '../helpers/Log';
 import { Responses } from '../helpers/Responses';
 import { Utils } from '../helpers/Utils';
 
-const attributes = ['id', 'name', 'email', 'username', 'state'];
+const attributes = ['id', 'name', 'email', 'username', 'description', 'state'];
 
 export const add = (req: Request, res: Response) => {
 

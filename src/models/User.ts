@@ -14,6 +14,7 @@ export class User extends Model {
     public password!: string;
     public secret!: string;
     public timestamp!: number;
+    public description!: string;
     public state!: boolean;
     public users_groups!: UserGroup[];
     public users_routes!: UserRoute[];
@@ -27,6 +28,7 @@ User.init({
     password: DataTypes.STRING,
     secret: DataTypes.STRING,
     timestamp: DataTypes.BIGINT,
+    description: DataTypes.TEXT,
     state: DataTypes.BOOLEAN,
 
 }, {
