@@ -7,7 +7,7 @@ const update = {
     email: Joi.string().email().empty(''),
     username: Joi.string().alphanum().min(3).empty(''),
     password: Joi.string().min(6).empty(''),
-    description: Joi.string().empty(''),
+    description: Joi.string().allow(null, ''),
     state: Joi.boolean().empty('')
 };
 
@@ -20,7 +20,7 @@ const create = {
     email: Joi.string().email().required(),
     username: Joi.string().alphanum().min(3).required(),
     password: Joi.string().min(6).required(),
-    description: Joi.string().empty(''),
+    description: Joi.string().allow(null, ''),
     state: Joi.boolean().required()
 };
 
