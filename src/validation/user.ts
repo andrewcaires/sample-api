@@ -8,7 +8,7 @@ const update = {
     username: Joi.string().alphanum().min(3).empty(''),
     password: Joi.string().min(6).empty(''),
     description: Joi.string().empty(''),
-    state: Joi.boolean().empty(true)
+    state: Joi.boolean().empty('')
 };
 
 const schemaUpdate = Joi.object(update);
