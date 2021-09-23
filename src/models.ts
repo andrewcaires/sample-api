@@ -1,10 +1,10 @@
-import { Group } from '../models/Group';
-import { Logs } from '../models/Logs';
-import { Route } from '../models/Route';
-import { GroupRoute } from '../models/GroupRoute';
-import { User } from '../models/User';
-import { UserGroup } from '../models/UserGroup';
-import { UserRoute } from '../models/UserRoute';
+import { Group } from './models/Group';
+import { Logs } from './models/Logs';
+import { Route } from './models/Route';
+import { GroupRoute } from './models/GroupRoute';
+import { User } from './models/User';
+import { UserGroup } from './models/UserGroup';
+import { UserRoute } from './models/UserRoute';
 
 Group.hasMany(GroupRoute);
 GroupRoute.belongsTo(Group);

@@ -4,8 +4,8 @@ import { API_WEBSOCKET_START } from './config';
 import { User } from './models';
 import { server } from './express';
 
-import { Log } from '../helpers/Log';
-import { Token } from '../helpers/Token';
+import { Log } from './helpers/Log';
+import { Token } from './helpers/Token';
 
 interface WebSocketEvent {
 

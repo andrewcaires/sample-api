@@ -8,8 +8,8 @@ import { API_HTTP_PORT, API_HTTP_PUBLIC, API_HTTP_CROSS } from './config';
 import { routes } from './routes';
 import { crt, key } from './ssl';
 
-import { Log } from '../helpers/Log';
-import { Responses } from '../helpers/Responses';
+import { Log } from './helpers/Log';
+import { Responses } from './helpers/Responses';
 
 export const app = express();
 
