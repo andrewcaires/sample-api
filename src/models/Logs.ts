@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 
-import { sequelize } from '../bin/sequelize';
+import { sequelize } from '../sequelize';
 
 export class Logs extends Model {
 

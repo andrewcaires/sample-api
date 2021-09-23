@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { User } from '../bin/models';
+import { User } from '../models';
 
 import { Log } from '../helpers/Log';
 import { Responses } from '../helpers/Responses';
@@ -65,13 +65,10 @@ export const logout = (req: Request, res: Response) => {
 
     const user = request.user;
 
-    if (user) {
+    user.secret = '';
+    user.timestamp = 0;
 
-        user.secret = '';
-        user.timestamp = 0;
-
-        user.save();
-    }
+    user.save();
 
     return Responses.success(res, 'Disconcerted');
 }
@@ -80,12 +77,7 @@ export const user = (req: Request, res: Response) => {
 
     const request = req as RequestUser;
 
-    let data: any = {};
+    const user = request.user;
 
-    if (request.user) {
-
-        data = request.user.toJSON();
-    }
-
-    return Responses.data(res, 'OK', Utils.filter(attributes, data));
+    return Responses.data(res, 'OK', Utils.filter(attributes, user.toJSON()));
 }

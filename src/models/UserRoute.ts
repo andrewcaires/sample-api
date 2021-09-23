@@ -3,7 +3,7 @@ import { Model } from 'sequelize';
 import { User } from './User';
 import { Route } from './Route';
 
-import { sequelize } from '../bin/sequelize';
+import { sequelize } from '../sequelize';
 
 export class UserRoute extends Model {
 

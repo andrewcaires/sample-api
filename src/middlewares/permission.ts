@@ -1,71 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { Group, GroupRoute, Route, UserGroup, UserRoute } from '../bin/models';
-
 import { Log } from '../helpers/Log';
+import { Permission } from '../helpers/Permission';
 import { Responses } from '../helpers/Responses';
 
 import { RequestUser } from './auth';
-
-const isPermission = (id: number, path: string): Promise<boolean> => {
-
-    return new Promise<boolean>((resolve, reject) => {
-
-        Route.findAll({
-
-            where: {state: true},
-
-            include: [{
-
-                model: GroupRoute,
-                required: true,
-
-                include: [{
-
-                    model: Group,
-                    required: true,
-                    where: {state: true},
-
-                    include: [{
-
-                        model: UserGroup,
-                        required: true,
-                        where: {userId: id}
-
-                    }]
-
-                }]
-
-            }]
-
-        }).then((routes) => {
-
-            if (routes.map((route) => route.permission).indexOf(path) >= 0) {
-
-                return resolve(true);
-            }
-
-            Route.findAll({
-
-                where: {state: true},
-
-                include: [{
-
-                    model: UserRoute,
-                    required: true,
-                    where: {userId: id},
-
-                }]
-
-            }).then((routes) => {
-
-                return resolve(routes.map((route) => route.permission).indexOf(path) >= 0);
-
-            }).catch(reject);
-
-        }).catch(reject);
-    });
-}
 
 export const permission = (path: string) => {
 
@@ -78,7 +17,7 @@ export const permission = (path: string) => {
             return Responses.unauthorized(res, 'Access denied');
         }
 
-        isPermission(request.user.id, path).then((allowed) => {
+        Permission.isPermission(request.user.id, path, 'api').then((allowed) => {
 
             if (!allowed) {
 

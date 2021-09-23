@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { User } from "../bin/models";
+import { User } from "../models";
 
 import { Responses } from '../helpers/Responses';
 import { Token } from '../helpers/Token';
 
 export interface RequestUser extends Request {
 
-    user?: User;
+    user: User;
 }
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {

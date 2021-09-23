@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken';
 
 import { Utils } from '../helpers/Utils';
 
-import { API_TOKEN_LIFETIME } from "../bin/config";
-import { User } from "../bin/models";
-import { crt, key } from '../bin/ssl';
+import { API_TOKEN_LIFETIME } from "../config";
+import { User } from "../models";
+import { crt, key } from '../ssl';
 
 import { Log } from '../helpers/Log';
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { User } from '../bin/models';
+import { User } from '../models';
 
 import { Log } from '../helpers/Log';
 import { Responses } from '../helpers/Responses';

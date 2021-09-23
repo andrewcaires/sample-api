@@ -1,4 +1,4 @@
-import { Logs } from '../bin/models';
+import { Logs } from '../models';
 
 import { Utils } from '../helpers/Utils';
 
@@ -13,42 +13,42 @@ enum ColorLog {
 
 type TypesLog = 'error' | 'info' | 'success' | 'warning' | '';
 
-const writeRaw = (color: ColorLog, type: TypesLog, message: string) => {
-
-    console.log('>', color, type + (' ').repeat(10 - type.length), '\x1b[37m', '|', Utils.dateformat(new Date, '%H:%M:%S'), '|', message);
-}
-
-const writeColor = (color: ColorLog, type: TypesLog, message: string) => {
-
-    writeRaw(color, type, message);
-
-    Logs.create({type: type, message: message}).catch(console.log);
-}
-
 export class Log {
 
     static write(message: string) {
 
-        writeColor(ColorLog.NONE, '', message);
+        Log.writeColor(ColorLog.NONE, '', message);
     }
 
     static error(message: string) {
 
-        writeColor(ColorLog.ERROR, 'error', message);
+        Log.writeColor(ColorLog.ERROR, 'error', message);
     }
 
     static info(message: string) {
 
-        writeColor(ColorLog.INFO, 'info', message);
+        Log.writeColor(ColorLog.INFO, 'info', message);
     }
 
     static success(message: string) {
 
-        writeColor(ColorLog.ERROR, 'success', message);
+        Log.writeColor(ColorLog.ERROR, 'success', message);
     }
 
     static warning(message: string) {
 
-        writeColor(ColorLog.WARNING, 'warning', message);
+        Log.writeColor(ColorLog.WARNING, 'warning', message);
+    }
+
+    private static writeRaw(color: ColorLog, type: TypesLog, message: string) {
+
+        console.log('>', color, type + (' ').repeat(10 - type.length), '\x1b[37m', '|', Utils.dateformat(new Date, '%H:%M:%S'), '|', message);
+    }
+    
+    private static writeColor(color: ColorLog, type: TypesLog, message: string) {
+    
+        Log.writeRaw(color, type, message);
+    
+        Logs.create({type: type, message: message}).catch(console.log);
     }
 }

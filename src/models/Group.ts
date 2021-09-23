@@ -3,7 +3,7 @@ import { DataTypes, Model } from 'sequelize';
 import { GroupRoute } from './GroupRoute';
 import { UserGroup } from './UserGroup';
 
-import { sequelize } from '../bin/sequelize';
+import { sequelize } from '../sequelize';
 
 export class Group extends Model {
 
