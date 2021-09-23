@@ -9,21 +9,7 @@ import { Utils } from '../helpers/Utils';
 
 import { RequestUser } from '../middlewares/auth';
 
-const attributes = ['id', 'name', 'username', 'state'];
-
-export const logged = (req: Request, res: Response) => {
-
-    const request = req as RequestUser;
-
-    let data: any = {};
-
-    if (request.user) {
-
-        data = request.user.toJSON();
-    }
-
-    return Responses.data(res, 'OK', Utils.filter(attributes, data));
-}
+const attributes = ['id', 'name', 'email', 'username'];
 
 export const login = (req: Request, res: Response) => {
 
@@ -88,4 +74,18 @@ export const logout = (req: Request, res: Response) => {
     }
 
     return Responses.success(res, 'Disconcerted');
+}
+
+export const user = (req: Request, res: Response) => {
+
+    const request = req as RequestUser;
+
+    let data: any = {};
+
+    if (request.user) {
+
+        data = request.user.toJSON();
+    }
+
+    return Responses.data(res, 'OK', Utils.filter(attributes, data));
 }

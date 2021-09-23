@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { logged, login, logout } from '../controllers/auth';
+import { login, logout, user } from '../controllers/auth';
 
 import { auth } from '../middlewares/auth';
 
@@ -8,7 +8,7 @@ import { queryValidation } from '../validation/auth';
 
 const router = Router();
 
-router.get('/logged', auth, logged);
+router.get('/', auth, user);
 
 router.post('/login', queryValidation, login);
 
