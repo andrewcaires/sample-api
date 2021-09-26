@@ -19,4 +19,6 @@ UserGroup.init({}, {
     modelName: 'users_groups',
     timestamps: false
 
-}).removeAttribute('id');
+});
+
+UserGroup.removeAttribute('id');

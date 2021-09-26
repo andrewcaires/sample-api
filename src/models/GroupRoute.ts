@@ -19,4 +19,6 @@ GroupRoute.init({}, {
     modelName: 'groups_routes',
     timestamps: false
 
-}).removeAttribute('id');
+});
+
+GroupRoute.removeAttribute('id');

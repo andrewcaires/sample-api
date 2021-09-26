@@ -19,4 +19,6 @@ UserRoute.init({}, {
     modelName: 'users_routes',
     timestamps: false
 
-}).removeAttribute('id');
+});
+
+UserRoute.removeAttribute('id');
