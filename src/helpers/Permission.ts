@@ -10,7 +10,7 @@ export class Permission {
 
             Route.findAll({
 
-                where: {type, state: true},
+                where: { type, state: true },
 
                 include: [{
 
@@ -21,13 +21,13 @@ export class Permission {
 
                         model: Group,
                         required: true,
-                        where: {state: true},
+                        where: { state: true },
 
                         include: [{
 
                             model: UserGroup,
                             required: true,
-                            where: {userId: id}
+                            where: { userId: id }
 
                         }]
 
@@ -41,13 +41,13 @@ export class Permission {
 
                 Route.findAll({
 
-                    where: {type, state: true},
+                    where: { type, state: true },
 
                     include: [{
 
                         model: UserRoute,
                         required: true,
-                        where: {userId: id},
+                        where: { userId: id },
 
                     }]
 
@@ -69,7 +69,7 @@ export class Permission {
 
             Route.findAll({
 
-                where: {type, state: true},
+                where: { type, state: true },
 
                 include: [{
 
@@ -80,13 +80,13 @@ export class Permission {
 
                         model: Group,
                         required: true,
-                        where: {state: true},
+                        where: { state: true },
 
                         include: [{
 
                             model: UserGroup,
                             required: true,
-                            where: {userId: id}
+                            where: { userId: id }
 
                         }]
 
@@ -103,13 +103,13 @@ export class Permission {
 
                 Route.findAll({
 
-                    where: {type, state: true},
+                    where: { type, state: true },
 
                     include: [{
 
                         model: UserRoute,
                         required: true,
-                        where: {userId: id},
+                        where: { userId: id },
 
                     }]
 

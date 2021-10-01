@@ -20,6 +20,7 @@ export const API_HTTP_KEY = process.env.API_HTTP_KEY!;
 export const API_HTTP_PORT = parseInt(process.env.API_HTTP_PORT || '3000');
 export const API_HTTP_PUBLIC = process.env.API_HTTP_PUBLIC!;
 export const API_HTTP_CROSS = toBool(process.env.API_HTTP_CROSS || 'false');
+export const API_HTTP_HYBRID = toBool(process.env.API_HTTP_HYBRID || 'false');
 
 export const API_TOKEN_CRT = process.env.API_TOKEN_CRT!;
 export const API_TOKEN_KEY = process.env.API_TOKEN_KEY!;

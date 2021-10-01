@@ -22,7 +22,7 @@ export const login = (req: Request, res: Response) => {
 
     User.findOne({
 
-        where: {username}
+        where: { username }
 
     }).then((user) => {
 

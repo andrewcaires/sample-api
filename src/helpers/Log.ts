@@ -44,11 +44,11 @@ export class Log {
 
         console.log('>', color, type + (' ').repeat(10 - type.length), '\x1b[37m', '|', Utils.dateformat(new Date, '%H:%M:%S'), '|', message);
     }
-    
+
     private static writeColor(color: ColorLog, type: TypesLog, message: string) {
-    
+
         Log.writeRaw(color, type, message);
-    
-        Logs.create({type: type, message: message}).catch(console.log);
+
+        Logs.create({ type: type, message: message }).catch(() => {});
     }
 }

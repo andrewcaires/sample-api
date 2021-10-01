@@ -36,7 +36,7 @@ export class Utils {
 
     static filter(allowed: string[], raw: any): any {
 
-        return Object.keys(raw).filter((key) => { 
+        return Object.keys(raw).filter((key) => {
 
             return allowed.includes(key);
 

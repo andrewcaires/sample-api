@@ -11,7 +11,7 @@ interface CustomError {
 
 export const validation = (schema: ObjectSchema) => {
 
-    const options = {abortEarly: false, allowUnknown: true, stripUnknown: true};
+    const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
 
     return (req: Request, res: Response, next: NextFunction) => {
 
@@ -19,13 +19,13 @@ export const validation = (schema: ObjectSchema) => {
 
         if (error) {
 
-            const message = error.details.map(x => x.message).join(', ');
+            const message = error.details.map((detail) => detail.message).join(', ');
 
             const errors: CustomError[] = [];
 
             error.details.forEach((detail) => {
 
-                errors.push({key: detail.context?.key || '', type: detail.type});
+                errors.push({ key: detail.context?.key || '', type: detail.type });
             });
 
             return Responses.validation(res, 'Validation error: ' + message, errors);

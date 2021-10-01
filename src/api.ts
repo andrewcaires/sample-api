@@ -1,17 +1,21 @@
 import { API_WEBSOCKET_START } from './config';
-import { listen } from './express';
+import { setup } from './database';
+import { app } from './express';
 import { sequelize } from './sequelize';
-import { start } from './websocket';
+import { createServer } from './server';
+import { startSocket } from './websocket';
 
-export const initialize = () => {
+export const initialize = (): void => {
 
     sequelize.sync().then(() => {
 
-        listen();
+        setup();
 
         if (API_WEBSOCKET_START) {
 
-            start();
+            startSocket(server);
         }
     });
 }
+
+export const server = createServer(app);

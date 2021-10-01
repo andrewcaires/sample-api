@@ -18,5 +18,8 @@ logs
 # npm cache directory
 .npm
 
+# npm package-lock
+package-lock.json
+
 # vscode
 .vscode

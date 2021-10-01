@@ -1,8 +1,9 @@
+import * as http from 'http';
+import * as https from 'https';
 import WebSocket from 'ws';
 
 import { API_WEBSOCKET_START } from './config';
 import { User } from './models';
-import { server } from './express';
 
 import { Log } from './helpers/Log';
 import { Token } from './helpers/Token';
@@ -13,7 +14,7 @@ interface WebSocketEvent {
     message: string;
 }
 
-const execEvent = (ws: WebSocket, user: User, message: string) => {
+const execEvent = (wss: WebSocket.Server, ws: WebSocket, user: User, message: string): void => {
 
     try {
 
@@ -29,7 +30,9 @@ const execEvent = (ws: WebSocket, user: User, message: string) => {
     }
 }
 
-export const start = () => {
+export const startSocket = (server: http.Server | https.Server): WebSocket.Server => {
+
+    const wss = new WebSocket.Server({ server, verifyClient })
 
     wss.on('connection', (ws: WebSocket) => {
 
@@ -39,7 +42,7 @@ export const start = () => {
 
             if (user) {
 
-                execEvent(ws, user, message);
+                execEvent(wss, ws, user, message);
 
             } else {
 
@@ -71,11 +74,11 @@ export const start = () => {
             wss.emit('close', ws);
         });
     });
+
+    return wss;
 }
 
 const verifyClient = (info: any, callback: any) => {
 
     return callback(API_WEBSOCKET_START);
 }
-
-export const wss = new WebSocket.Server({server, verifyClient});

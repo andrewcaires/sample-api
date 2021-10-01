@@ -98,7 +98,7 @@ export const set = (req: Request, res: Response) => {
 
     if (req.body.password) {
 
-        req.body.password = Utils.md5(req.body.password);    
+        req.body.password = Utils.md5(req.body.password);
     }
 
     User.update(req.body, {

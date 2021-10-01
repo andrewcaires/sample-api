@@ -3,7 +3,7 @@ export * from './api';
 export * from './config';
 export * from './models';
 export * from './express';
-export * from './routes';
+export * from './router';
 export * from './sequelize';
 export * from './ssl';
 export * from './websocket';
