@@ -1,6 +1,6 @@
 {
   "name": "@andrewcaires/sample-api",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple api for small applications using express, jsonwebtoken, sequelize and websocket",
   "main": "dist/index.js",
   "scripts": {
@@ -41,11 +41,13 @@
     "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.4",
     "md5": "^2.3.0",
+    "mime-types": "^2.1.33",
+    "multer": "^1.4.3",
     "mysql2": "^2.3.0",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.5",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^4.2.0",
     "ws": "^8.2.2"
   },
   "devDependencies": {
@@ -54,6 +56,8 @@
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.5",
     "@types/md5": "^2.3.1",
+    "@types/mime-types": "^2.1.1",
+    "@types/multer": "^1.4.7",
     "@types/node": "^16.10.2",
     "@types/ws": "^8.2.0",
     "ts-node": "^10.2.1",
