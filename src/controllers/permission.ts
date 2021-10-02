@@ -4,13 +4,14 @@ import { Log } from '../helpers/Log';
 import { Permission } from '../helpers/Permission';
 import { Responses } from '../helpers/Responses';
 
-import { RequestUser } from '../middlewares/auth';
-
 export const all = (req: Request, res: Response) => {
 
-    const request = req as RequestUser;
+    const user = req.user;
 
-    const user = request.user;
+    if (!user) {
+
+        return Responses.unauthorized(res, 'Access denied');
+    }
 
     Permission.allPermission(user.id, 'app').then((permissions) => {
 

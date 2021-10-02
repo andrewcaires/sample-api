@@ -29,12 +29,10 @@ export const validation = (schema: ObjectSchema) => {
             });
 
             return Responses.validation(res, 'Validation error: ' + message, errors);
-
-        } else {
-
-            req.body = value;
-
-            return next();
         }
+
+        req.body = value;
+
+        return next();
     }
 }

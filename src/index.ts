@@ -16,4 +16,5 @@ export * from './helpers/Utils';
 
 export * from './middlewares/auth';
 export * from './middlewares/permission';
+export * from './middlewares/upload';
 export * from './middlewares/validation';

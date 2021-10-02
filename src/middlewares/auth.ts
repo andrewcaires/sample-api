@@ -7,16 +7,20 @@ import { Token } from '../helpers/Token';
 
 import { API_TOKEN_HEADER } from '../config';
 
-export interface RequestUser extends Request {
+declare global {
 
-    user: User;
+    namespace Express {
+
+        interface Request {
+
+            user: User | undefined;
+        }
+    }
 }
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
 
-    const request = req as RequestUser;
-
-    const token = request.headers[API_TOKEN_HEADER]?.toString() || '';
+    const token = req.headers[API_TOKEN_HEADER]?.toString() || '';
 
     Token.check(token).then((token) => {
 
@@ -30,7 +34,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
             return Responses.notfound(res, 'User not found');
         }
 
-        request.user = token.user;
+        req.user = token.user;
 
         return next();
     });

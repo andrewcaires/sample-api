@@ -7,8 +7,6 @@ import { Responses } from '../helpers/Responses';
 import { Token } from '../helpers/Token';
 import { Utils } from '../helpers/Utils';
 
-import { RequestUser } from '../middlewares/auth';
-
 const attributes = ['id', 'name', 'email', 'username'];
 
 export const login = (req: Request, res: Response) => {
@@ -61,9 +59,12 @@ export const login = (req: Request, res: Response) => {
 
 export const logout = (req: Request, res: Response) => {
 
-    const request = req as RequestUser;
+    const user = req.user;
 
-    const user = request.user;
+    if (!user) {
+
+        return Responses.unauthorized(res, 'Access denied');
+    }
 
     user.secret = '';
     user.timestamp = 0;
@@ -75,9 +76,12 @@ export const logout = (req: Request, res: Response) => {
 
 export const user = (req: Request, res: Response) => {
 
-    const request = req as RequestUser;
+    const user = req.user;
 
-    const user = request.user;
+    if (!user) {
+
+        return Responses.unauthorized(res, 'Access denied');
+    }
 
     return Responses.data(res, 'OK', Utils.filter(attributes, user.toJSON()));
 }
