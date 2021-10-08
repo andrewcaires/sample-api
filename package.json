@@ -1,6 +1,6 @@
 {
   "name": "@andrewcaires/sample-api",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Simple api for small applications using express, jsonwebtoken, sequelize and websocket",
   "main": "dist/index.js",
   "scripts": {
