@@ -11,20 +11,20 @@ const router = Router();
 
 router.use(auth);
 
-router.get('/', permission('users.user'), all);
+router.get('/', permission('users.read'), all);
 
-router.post('/', permission('users.admin'), createValidation, add);
+router.post('/', permission('users.write'), createValidation, add);
 
 router.route('/:id')
 
-    .get(permission('users.user'), get)
+    .get(permission('users.read'), get)
 
-    .put(permission('users.admin'), updateValidation, set)
+    .put(permission('users.write'), updateValidation, set)
 
-    .delete(permission('users.admin'), del);
+    .delete(permission('users.write'), del);
 
-router.put('/groups/:id', permission('users.admin'), groupsValidation, groups);
+router.put('/groups/:id', permission('users.write'), groupsValidation, groups);
 
-router.put('/routes/:id', permission('users.admin'), routesValidation, routes);
+router.put('/routes/:id', permission('users.write'), routesValidation, routes);
 
 export default router;
