@@ -1,26 +1,30 @@
 import { Router } from 'express';
 
-import { add, all, del, get, set } from '../controllers/users';
+import { add, all, del, get, groups, routes, set } from '../controllers/users';
 
 import { auth } from '../middlewares/auth';
 import { permission } from '../middlewares/permission';
 
-import { createValidation, updateValidation } from '../validation/user';
+import { createValidation, groupsValidation, routesValidation, updateValidation } from '../validation/user';
 
 const router = Router();
 
 router.use(auth);
 
-router.get('/', permission('users.all'), all);
+router.get('/', permission('users.user'), all);
 
-router.post('/', permission('users.add'), createValidation, add);
+router.post('/', permission('users.admin'), createValidation, add);
 
 router.route('/:id')
 
-    .get(permission('users.get'), get)
+    .get(permission('users.user'), get)
 
-    .put(permission('users.set'), updateValidation, set)
+    .put(permission('users.admin'), updateValidation, set)
 
-    .delete(permission('users.del'), del);
+    .delete(permission('users.admin'), del);
+
+router.put('/groups/:id', permission('users.admin'), groupsValidation, groups);
+
+router.put('/routes/:id', permission('users.admin'), routesValidation, routes);
 
 export default router;

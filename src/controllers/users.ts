@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { User } from '../models';
+import { User, UserGroup, UserRoute } from '../models';
 
 import { Log } from '../helpers/Log';
 import { Responses } from '../helpers/Responses';
@@ -18,7 +18,7 @@ export const add = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('add -> ' + error.message);
+        Log.error('add -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -36,7 +36,7 @@ export const all = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('all -> ' + error.message);
+        Log.error('all -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -48,7 +48,7 @@ export const del = (req: Request, res: Response) => {
 
     User.destroy({
 
-        where: { id: id }
+        where: { id }
 
     }).then((count) => {
 
@@ -61,7 +61,7 @@ export const del = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('del -> ' + error.message);
+        Log.error('del -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -86,7 +86,79 @@ export const get = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('get -> ' + error.message);
+        Log.error('get -> ' + error.message, 'users');
+
+        return Responses.error(res, 'Internal Server Error');
+    });
+}
+
+export const groups = (req: Request, res: Response) => {
+
+    const { id } = req.params;
+    const { groups } = req.body;
+
+    User.findByPk(id, {
+
+        attributes: ['id']
+
+    }).then(async (user) => {
+
+        if (!user) {
+
+            return Responses.notfound(res, 'User not found');
+        }
+
+        await UserGroup.destroy({ where: { userId: user.id } });
+
+        if (groups) {
+
+            for (let i = 0; i < groups.length; i++) {
+
+                await UserGroup.create({ userId: user.id, groupId: groups[i] });
+            }
+        }
+
+        return Responses.success(res, 'OK');
+
+    }).catch((error) => {
+
+        Log.error('groups -> ' + error.message, 'users');
+
+        return Responses.error(res, 'Internal Server Error');
+    });
+}
+
+export const routes = (req: Request, res: Response) => {
+
+    const { id } = req.params;
+    const { routes } = req.body;
+
+    User.findByPk(id, {
+
+        attributes: ['id']
+
+    }).then(async (user) => {
+
+        if (!user) {
+
+            return Responses.notfound(res, 'User not found');
+        }
+
+        await UserRoute.destroy({ where: { userId: user.id } });
+
+        if (routes) {
+
+            for (let i = 0; i < routes.length; i++) {
+
+                await UserRoute.create({ userId: user.id, routeId: routes[i] });
+            }
+        }
+
+        return Responses.success(res, 'OK');
+
+    }).catch((error) => {
+
+        Log.error('routes -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -105,7 +177,7 @@ export const set = (req: Request, res: Response) => {
 
         where: { id }
 
-    }).then((count) => {
+    }).then(([count]) => {
 
         if (!count) {
 
@@ -116,7 +188,7 @@ export const set = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('set -> ' + error.message);
+        Log.error('set -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });

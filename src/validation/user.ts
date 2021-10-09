@@ -2,19 +2,6 @@ import Joi from 'joi';
 
 import { validation } from '../middlewares/validation';
 
-const update = {
-    name: Joi.string().min(5).empty(''),
-    email: Joi.string().email().empty(''),
-    username: Joi.string().alphanum().min(3).empty(''),
-    password: Joi.string().min(6).empty(''),
-    description: Joi.string().allow(null, ''),
-    state: Joi.boolean().empty('')
-};
-
-const schemaUpdate = Joi.object(update);
-
-export const updateValidation = validation(schemaUpdate);
-
 const create = {
     name: Joi.string().min(5).required(),
     email: Joi.string().email().required(),
@@ -27,3 +14,32 @@ const create = {
 const schemaCreate = Joi.object(create);
 
 export const createValidation = validation(schemaCreate);
+
+const groups = {
+    groups: Joi.array().items(Joi.number())
+};
+
+const schemaGroups = Joi.object(groups);
+
+export const groupsValidation = validation(schemaGroups);
+
+const routes = {
+    routes: Joi.array().items(Joi.number())
+};
+
+const schemaRoutes = Joi.object(routes);
+
+export const routesValidation = validation(schemaRoutes);
+
+const update = {
+    name: Joi.string().min(5).empty(''),
+    email: Joi.string().email().empty(''),
+    username: Joi.string().alphanum().min(3).empty(''),
+    password: Joi.string().min(6).empty(''),
+    description: Joi.string().allow(null, ''),
+    state: Joi.boolean().empty('')
+};
+
+const schemaUpdate = Joi.object(update);
+
+export const updateValidation = validation(schemaUpdate);
