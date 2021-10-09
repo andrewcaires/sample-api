@@ -9,6 +9,7 @@ export class Group extends Model {
 
     public id!: number;
     public name!: string;
+    public description!: string;
     public state!: boolean;
     public groups_routes!: GroupRoute[];
     public users_groups!: UserGroup[];
@@ -17,6 +18,7 @@ export class Group extends Model {
 Group.init({
 
     name: DataTypes.STRING,
+    description: DataTypes.TEXT,
     state: DataTypes.BOOLEAN,
 
 }, {
