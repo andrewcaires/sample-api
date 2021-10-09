@@ -51,7 +51,7 @@ export const login = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('login -> ' + error.message);
+        Log.error('login -> ' + error.message, 'auth');
 
         return Responses.error(res, 'Internal Server Error');
     });

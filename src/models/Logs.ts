@@ -5,12 +5,14 @@ import { sequelize } from '../sequelize';
 export class Logs extends Model {
 
     public type!: string;
+    public source!: string;
     public message!: string;
 }
 
 Logs.init({
 
     type: DataTypes.STRING,
+    source: DataTypes.STRING,
     message: DataTypes.TEXT
 
 }, {

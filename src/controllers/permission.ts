@@ -19,7 +19,7 @@ export const all = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('all -> ' + error.message);
+        Log.error('all -> ' + error.message, 'permission');
 
         return Responses.error(res, 'Internal Server Error');
     });
