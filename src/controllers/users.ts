@@ -18,7 +18,7 @@ export const add = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('add -> ' + error.message, 'users');
+        Log.error(error.message, 'users.add');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -36,7 +36,7 @@ export const all = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('all -> ' + error.message, 'users');
+        Log.error(error.message, 'users.all');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -61,7 +61,7 @@ export const del = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('del -> ' + error.message, 'users');
+        Log.error(error.message, 'users.del');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -86,7 +86,7 @@ export const get = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('get -> ' + error.message, 'users');
+        Log.error(error.message, 'users.get');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -113,7 +113,7 @@ export const groupsAll = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('groupsAll -> ' + error.message, 'users');
+        Log.error(error.message, 'users.groupsAll');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -156,7 +156,7 @@ export const groupsSet = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('groupsSet -> ' + error.message, 'users');
+        Log.error(error.message, 'users.groupsSet');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -183,7 +183,7 @@ export const routesAll = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('routesAll -> ' + error.message, 'users');
+        Log.error(error.message, 'users.routesAll');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -226,7 +226,7 @@ export const routesSet = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('routesSet -> ' + error.message, 'users');
+        Log.error(error.message, 'users.routesSet');
 
         return Responses.error(res, 'Internal Server Error');
     });
@@ -256,7 +256,7 @@ export const set = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('set -> ' + error.message, 'users');
+        Log.error(error.message, 'users.set');
 
         return Responses.error(res, 'Internal Server Error');
     });
