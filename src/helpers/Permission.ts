@@ -2,7 +2,7 @@ import { Group, GroupRoute, Route, UserGroup, UserRoute } from '../models';
 
 export class Permission {
 
-    static allPermission(id: number, type: string): Promise<string[]> {
+    static allPermission(id: number): Promise<string[]> {
 
         const permissions: string[] = [];
 
@@ -10,7 +10,7 @@ export class Permission {
 
             Route.findAll({
 
-                where: { type, state: true },
+                where: { state: true },
 
                 include: [{
 
@@ -41,7 +41,7 @@ export class Permission {
 
                 Route.findAll({
 
-                    where: { type, state: true },
+                    where: { state: true },
 
                     include: [{
 
@@ -63,13 +63,13 @@ export class Permission {
         });
     }
 
-    static isPermission(id: number, path: string, type: string): Promise<boolean> {
+    static isPermission(id: number, path: string): Promise<boolean> {
 
         return new Promise<boolean>((resolve, reject) => {
 
             Route.findAll({
 
-                where: { type, state: true },
+                where: { state: true },
 
                 include: [{
 
@@ -103,7 +103,7 @@ export class Permission {
 
                 Route.findAll({
 
-                    where: { type, state: true },
+                    where: { state: true },
 
                     include: [{
 

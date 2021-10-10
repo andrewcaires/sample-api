@@ -13,7 +13,7 @@ export const all = (req: Request, res: Response) => {
         return Responses.unauthorized(res, 'Access denied');
     }
 
-    Permission.allPermission(user.id, 'app').then((permissions) => {
+    Permission.allPermission(user.id).then((permissions) => {
 
         return Responses.data(res, 'OK', permissions);
 

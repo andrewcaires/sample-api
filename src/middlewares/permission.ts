@@ -15,7 +15,7 @@ export const permission = (path: string) => {
             return Responses.unauthorized(res, 'Access denied');
         }
 
-        Permission.isPermission(user.id, path, 'api').then((allowed) => {
+        Permission.isPermission(user.id, path).then((allowed) => {
 
             if (!allowed) {
 

@@ -10,7 +10,6 @@ export class Route extends Model {
     public id!: number;
     public name!: string;
     public permission!: string;
-    public type!: string;
     public description!: string;
     public state!: boolean;
     public users_routes!: UserRoute[];
@@ -21,7 +20,6 @@ Route.init({
 
     name: DataTypes.STRING,
     permission: DataTypes.STRING,
-    type: DataTypes.STRING,
     description: DataTypes.TEXT,
     state: DataTypes.BOOLEAN,
 
