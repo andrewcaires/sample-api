@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { User, UserGroup, UserRoute } from '../models';
+import { Group, Route, User, UserGroup, UserRoute } from '../models';
 
 import { Log } from '../helpers/Log';
 import { Responses } from '../helpers/Responses';
@@ -92,7 +92,34 @@ export const get = (req: Request, res: Response) => {
     });
 }
 
-export const groups = (req: Request, res: Response) => {
+export const groupsAll = (req: Request, res: Response) => {
+
+    const { id } = req.params;
+
+    UserGroup.findAll({
+
+        where: { userId: id },
+
+        include: [{
+
+            model: Group,
+            required: true,
+
+        }]
+
+    }).then((groups) => {
+
+        return Responses.data(res, 'OK', groups.map((group) => group.group));
+
+    }).catch((error) => {
+
+        Log.error('groupsAll -> ' + error.message, 'users');
+
+        return Responses.error(res, 'Internal Server Error');
+    });
+}
+
+export const groupsSet = (req: Request, res: Response) => {
 
     const { id } = req.params;
     const { groups } = req.body;
@@ -112,9 +139,20 @@ export const groups = (req: Request, res: Response) => {
 
         if (groups) {
 
+            let count = 0;
+
             for (let i = 0; i < groups.length; i++) {
 
-                await UserGroup.create({ userId: user.id, groupId: groups[i] });
+                count = await Group.count({
+
+                    where: { id: groups[i] }
+
+                });
+
+                if (count) {
+
+                    await UserGroup.create({ userId: user.id, groupId: groups[i] });
+                }
             }
         }
 
@@ -122,13 +160,40 @@ export const groups = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('groups -> ' + error.message, 'users');
+        Log.error('groupsSet -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });
 }
 
-export const routes = (req: Request, res: Response) => {
+export const routesAll = (req: Request, res: Response) => {
+
+    const { id } = req.params;
+
+    UserRoute.findAll({
+
+        where: { userId: id },
+
+        include: [{
+
+            model: Route,
+            required: true,
+
+        }]
+
+    }).then((routes) => {
+
+        return Responses.data(res, 'OK', routes.map((route) => route.route));
+
+    }).catch((error) => {
+
+        Log.error('routesAll -> ' + error.message, 'users');
+
+        return Responses.error(res, 'Internal Server Error');
+    });
+}
+
+export const routesSet = (req: Request, res: Response) => {
 
     const { id } = req.params;
     const { routes } = req.body;
@@ -148,9 +213,20 @@ export const routes = (req: Request, res: Response) => {
 
         if (routes) {
 
+            let count = 0;
+
             for (let i = 0; i < routes.length; i++) {
 
-                await UserRoute.create({ userId: user.id, routeId: routes[i] });
+                count = await Route.count({
+
+                    where: { id: routes[i] }
+
+                });
+
+                if (count) {
+
+                    await UserRoute.create({ userId: user.id, routeId: routes[i] });
+                }
             }
         }
 
@@ -158,7 +234,7 @@ export const routes = (req: Request, res: Response) => {
 
     }).catch((error) => {
 
-        Log.error('routes -> ' + error.message, 'users');
+        Log.error('routesSet -> ' + error.message, 'users');
 
         return Responses.error(res, 'Internal Server Error');
     });
