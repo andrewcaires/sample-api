@@ -21,23 +21,32 @@ export const setup = async () => {
 
             const group = await Group.create({
                 name: 'Admin',
+                description: '',
                 state: 1
             });
 
-            UserGroup.create({ userId: user.id, groupId: group.id });
+            await UserGroup.create({ userId: user.id, groupId: group.id });
 
             const routes = await Route.count();
 
             if (routes == 0) {
 
-                ['ADD', 'ALL', 'DEL', 'GET', 'SET'].forEach(async (value) => {
+                const permissions = ['READ', 'WRITE'];
 
-                    const name = 'Users ' + value;
-                    const permission = 'users.' + value.toLowerCase();
+                const models = ['Users', 'Groups', 'Routes'];
 
-                    const route = await Route.create({ name, permission, type: 'api', state: 1 });
+                models.forEach((model) => {
 
-                    GroupRoute.create({ groupId: group.id, routeId: route.id });
+                    permissions.forEach(async (permission) => {
+
+                        const name = model + ' ' + permission;
+
+                        permission = model.toLowerCase() + '.' + permission.toLowerCase();
+
+                        const route = await Route.create({ name, permission, state: 1 });
+
+                        await GroupRoute.create({ groupId: group.id, routeId: route.id });
+                    });
                 });
             }
         }
