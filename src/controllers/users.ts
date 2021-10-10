@@ -143,11 +143,7 @@ export const groupsSet = (req: Request, res: Response) => {
 
             for (let i = 0; i < groups.length; i++) {
 
-                count = await Group.count({
-
-                    where: { id: groups[i] }
-
-                });
+                count = await Group.count({ where: { id: groups[i] } });
 
                 if (count) {
 
@@ -217,11 +213,7 @@ export const routesSet = (req: Request, res: Response) => {
 
             for (let i = 0; i < routes.length; i++) {
 
-                count = await Route.count({
-
-                    where: { id: routes[i] }
-
-                });
+                count = await Route.count({ where: { id: routes[i] } });
 
                 if (count) {
 
