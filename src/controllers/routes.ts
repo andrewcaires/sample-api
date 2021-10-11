@@ -91,7 +91,7 @@ export const set = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.notfound(res, 'Route not changed');
+            return Responses.success(res, 'Route not changed');
         }
 
         return Responses.success(res, 'OK');

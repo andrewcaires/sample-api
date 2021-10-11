@@ -163,7 +163,7 @@ export const set = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.notfound(res, 'Group not changed');
+            return Responses.success(res, 'Group not changed');
         }
 
         return Responses.success(res, 'OK');

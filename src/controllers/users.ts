@@ -249,7 +249,7 @@ export const set = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.notfound(res, 'User not changed');
+            return Responses.success(res, 'User not changed');
         }
 
         return Responses.success(res, 'OK');
