@@ -20,7 +20,10 @@ interface UploadOptions {
 
 const getFileName = (path: string, ext: string): string => {
 
-    const name = Utils.hash() + '.' + ext;
+    const date = new Date;
+    const time = date.getTime();
+
+    const name = Utils.hash() + '.' + time + '.' + ext;
 
     if (existsSync(join(path, name))) {
 
