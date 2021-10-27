@@ -4,6 +4,7 @@ import { User } from '../models';
 
 import { Log } from '../helpers/Log';
 import { Responses } from '../helpers/Responses';
+import { Permission } from '../helpers/Permission';
 import { Token } from '../helpers/Token';
 import { Utils } from '../helpers/Utils';
 
@@ -29,14 +30,14 @@ export const login = (req: Request, res: Response) => {
             return Responses.notfound(res, 'User not found');
         }
 
-        if (!user.state) {
-
-            return Responses.error(res, 'User is disabled');
-        }
-
         if (user.password != Utils.md5(password)) {
 
             return Responses.error(res, 'Invalid password');
+        }
+
+        if (!user.state) {
+
+            return Responses.error(res, 'User is disabled');
         }
 
         Token.create(user).then((token) => {
@@ -83,5 +84,16 @@ export const user = (req: Request, res: Response) => {
         return Responses.unauthorized(res, 'Access denied');
     }
 
-    return Responses.data(res, 'OK', Utils.filter(attributes, user.toJSON()));
+    Permission.allPermission(user.id).then((permissions) => {
+
+        const filter = Utils.filter(attributes, user.toJSON());
+
+        return Responses.data(res, 'OK', { ...filter, permissions });
+
+    }).catch((error) => {
+
+        Log.error(error.message, 'auth.user');
+
+        return Responses.error(res, 'Internal Server Error');
+    });
 }
