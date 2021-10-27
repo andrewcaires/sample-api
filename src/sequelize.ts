@@ -12,7 +12,10 @@ const mariadb = (): Sequelize => {
             host: API_DB_HOST,
             port: API_DB_PORT,
             dialect: 'mariadb',
-            logging: API_DB_LOG
+            logging: API_DB_LOG,
+            define: {
+                timestamps: false
+            }
         }
     );
 }
@@ -27,7 +30,10 @@ const mysql = (): Sequelize => {
             host: API_DB_HOST,
             port: API_DB_PORT,
             dialect: 'mysql',
-            logging: API_DB_LOG
+            logging: API_DB_LOG,
+            define: {
+                timestamps: false
+            }
         }
     );
 }
@@ -37,7 +43,10 @@ const memory = (): Sequelize => {
     return new Sequelize(
         'sqlite::memory:',
         {
-            logging: API_DB_LOG
+            logging: API_DB_LOG,
+            define: {
+                timestamps: false
+            }
         }
     );
 }
@@ -52,7 +61,10 @@ const postgres = (): Sequelize => {
             host: API_DB_HOST,
             port: API_DB_PORT,
             dialect: 'postgres',
-            logging: API_DB_LOG
+            logging: API_DB_LOG,
+            define: {
+                timestamps: false
+            }
         }
     );
 }
@@ -62,7 +74,10 @@ const sqlite = (): Sequelize => {
     return new Sequelize({
         storage: API_DB_HOST,
         dialect: 'sqlite',
-        logging: API_DB_LOG
+        logging: API_DB_LOG,
+        define: {
+            timestamps: false
+        }
     });
 }
 
