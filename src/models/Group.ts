@@ -19,12 +19,11 @@ Group.init({
 
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
-    state: DataTypes.BOOLEAN,
+    state: DataTypes.BOOLEAN
 
 }, {
 
     sequelize,
     modelName: 'group',
-    timestamps: false
 
 });

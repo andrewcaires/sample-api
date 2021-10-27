@@ -19,6 +19,8 @@ Logs.init({
 
     sequelize,
     modelName: 'logs',
-    timestamps: true
+    timestamps: true,
+    createdAt: 'created',
+    updatedAt: false
 
 });

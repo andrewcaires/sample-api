@@ -16,8 +16,7 @@ export class GroupRoute extends Model {
 GroupRoute.init({}, {
 
     sequelize,
-    modelName: 'groups_routes',
-    timestamps: false
+    modelName: 'groups_routes'
 
 });
 

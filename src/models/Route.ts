@@ -26,7 +26,6 @@ Route.init({
 }, {
 
     sequelize,
-    modelName: 'route',
-    timestamps: false
+    modelName: 'route'
 
 });

@@ -16,8 +16,7 @@ export class UserGroup extends Model {
 UserGroup.init({}, {
 
     sequelize,
-    modelName: 'users_groups',
-    timestamps: false
+    modelName: 'users_groups'
 
 });
 

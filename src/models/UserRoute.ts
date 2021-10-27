@@ -16,8 +16,7 @@ export class UserRoute extends Model {
 UserRoute.init({}, {
 
     sequelize,
-    modelName: 'users_routes',
-    timestamps: false
+    modelName: 'users_routes'
 
 });
 
