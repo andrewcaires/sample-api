@@ -1,15 +1,29 @@
 import cors from 'cors';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { existsSync } from 'fs';
 
 import { API_HTTP_CROSS, API_HTTP_PUBLIC } from './config';
 import { router } from './router';
 
+import { Log } from './helpers/Log';
 import { Responses } from './helpers/Responses';
 
 export const app = express();
 
 app.use(express.json());
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+
+    if (error) {
+
+        Log.error(error.message, 'express');
+
+        return Responses.error(res, 'Internal Server Error');
+    }
+
+    return next();
+});
+
 app.use(express.urlencoded({ extended: true }));
 
 app.disable('x-powered-by');
