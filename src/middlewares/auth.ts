@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { User } from "../models";
+import { Auth, User } from "../models";
 
 import { Responses } from '../helpers/Responses';
 import { Token } from '../helpers/Token';
 
-import { API_TOKEN_HEADER } from '../config';
+import { API_TOKEN_HEADER, API_TOKEN_LIFETIME } from '../config';
 
 declare global {
 
@@ -13,6 +13,7 @@ declare global {
 
         interface Request {
 
+            auth: Auth | undefined;
             user: User | undefined;
         }
     }
@@ -20,22 +21,37 @@ declare global {
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
 
-    const token = req.headers[API_TOKEN_HEADER]?.toString() || '';
+    const token = req.get(API_TOKEN_HEADER) || '';
 
     Token.check(token).then((token) => {
 
-        if (token.error) {
+        const auth = token.auth;
 
-            return Responses.error(res, token.error);
-        }
-
-        if (!token.user) {
-
-            return Responses.notfound(res, 'User not found');
-        }
-
+        req.auth = auth;
         req.user = token.user;
 
-        return next();
+        const useragent = req.get('User-Agent');
+
+        if (useragent) {
+
+            auth.useragent = useragent;
+        }
+
+        const time = Date.now();
+
+        auth.timestamp = time + (API_TOKEN_LIFETIME * 60000);
+
+        auth.save().then(() => {
+
+            return next();
+
+        }).catch(() => {
+
+            return Responses.error(res, 'Internal Server Error');
+        });
+
+    }).catch((error) => {
+
+        return Responses.error(res, error);
     });
 }

@@ -13,8 +13,6 @@ export class User extends Model {
     public username!: string;
     public password!: string;
     public description!: string;
-    public secret!: string;
-    public timestamp!: number;
     public state!: boolean;
     public users_groups!: UserGroup[];
     public users_routes!: UserRoute[];
@@ -27,9 +25,7 @@ User.init({
     username: DataTypes.STRING,
     password: DataTypes.STRING,
     description: DataTypes.TEXT,
-    secret: DataTypes.STRING,
-    timestamp: DataTypes.BIGINT,
-    state: DataTypes.BOOLEAN,
+    state: DataTypes.BOOLEAN
 
 }, {
 

@@ -1,94 +1,96 @@
 import jwt from 'jsonwebtoken';
 
-import { Utils } from '../helpers/Utils';
-
 import { API_TOKEN_LIFETIME } from "../config";
-import { User } from "../models";
+import { Auth, User } from "../models";
 import { crt, key } from '../ssl';
 
 import { Log } from '../helpers/Log';
+import { Utils } from '../helpers/Utils';
 
 interface ResponseToken {
 
-    user?: User,
-    error?: string
+    auth: Auth,
+    user: User,
 }
 
 export class Token {
 
     static check(token: string): Promise<ResponseToken> {
 
-        return new Promise<ResponseToken>((resolve) => {
+        return new Promise<ResponseToken>((resolve, reject) => {
 
             if (!token) {
 
-                return resolve({error: 'Invalid token'});
+                return reject('Access denied');
             }
 
             if (token.split('.').length < 3) {
 
-                return resolve({error: 'Invalid token'});
+                return reject('Invalid token');
             }
-
-            const date = new Date();
-            const time = date.getTime();
 
             if (!crt.token) {
 
-                return resolve({error: 'Invalid Secret'});
+                return reject('Invalid Secret');
             }
 
-            jwt.verify(token, crt.token, (err, decoded) => {
-    
-                if (err) {
+            jwt.verify(token, crt.token, (error, decoded) => {
 
-                    return resolve({error: 'Invalid Token'});
+                if (error) {
+
+                    return reject('Invalid token');
                 }
 
-                if (decoded && decoded.id) {
+                if (decoded && decoded.id && decoded.secret) {
 
                     User.findOne({
 
-                        where: {id: decoded.id},
+                        where: { id: decoded.id }
 
                     }).then((user) => {
 
-                        if (!user) {
+                        if (!user || !user.state) {
 
-                            return resolve({error: 'Access denied'});
+                            return reject('Access denied');
                         }
 
-                        if (!user.state) {
+                        Auth.findOne({
 
-                            return resolve({error: 'Access denied'});
-                        }
+                            where: { logout: null, secret: decoded.secret, userId: user.id }
 
-                        if (time > user.timestamp) {
+                        }).then((auth) => {
 
-                            return resolve({error: 'Expired token'});
-                        }
+                            if (!auth) {
 
-                        if (decoded.secret != user.secret) {
+                                return reject('Access denied');
+                            }
 
-                            return resolve({error: 'Access denied'});
-                        }
+                            const time = Date.now();
 
-                        user.timestamp = time + ( API_TOKEN_LIFETIME * 60000 );
+                            if (time > auth.timestamp) {
 
-                        user.save();
+                                return reject('Expired token');
+                            }
 
-                        return resolve({user});
+                            return resolve({ auth, user });
+
+                        }).catch((error) => {
+
+                            Log.error(error.message, 'token');
+
+                            return reject('Internal Server Error');
+                        });
 
                     }).catch((error) => {
 
-                        Log.error('check -> ' + error.message);
+                        Log.error(error.message, 'token');
 
-                        return resolve({error: 'Internal Server Error'});
+                        return reject('Internal Server Error');
                     });
 
                 } else {
 
-                    return resolve({error: 'Access denied'});
+                    return reject('Access denied');
                 }
             });
         });
@@ -96,31 +98,60 @@ export class Token {
 
     static create(user: User): Promise<string> {
 
-        const data = {id: user.id, secret: Utils.hash()};
-
-        return new Promise<string>((resolve) => {
-
-            const date = new Date();
-            const time = date.getTime();
+        return new Promise<string>((resolve, reject) => {
 
             if (!key.token) {
 
-                return resolve('');
+                return reject('Invalid Secret');
             }
 
-            jwt.sign(data, key.token, {algorithm: 'RS256'}, (err, token) => {
+            const id = user.id;
+            const secret = Utils.hash();
+
+            jwt.sign({ id, secret }, key.token, { algorithm: 'RS256' }, (err, token) => {
 
                 if (!err && token) {
 
-                    user.secret = data.secret;
-                    user.timestamp = time + ( API_TOKEN_LIFETIME * 60000 );
+                    const login = Date.now();
+                    const timestamp = login + (API_TOKEN_LIFETIME * 60000);
 
-                    user.save();
+                    Auth.create({
 
-                    return resolve(token);
+                        login, secret, timestamp, userId: id,
+
+                    }).then((auth) => {
+
+                        return resolve(token);
+
+                    }).catch((error) => {
+
+                        Log.error(error.message, 'token');
+
+                        return reject('Internal Server Error');
+                    });
+
+                } else {
+
+                    return reject('Internal Server Error');
                 }
+            });
+        });
+    }
 
-                return resolve('');
+    static destroy(auth: Auth): Promise<void> {
+
+        return new Promise<void>((resolve, reject) => {
+
+            auth.logout = Date.now();
+            auth.timestamp = auth.logout;
+
+            auth.save().then(() => {
+
+                return resolve();
+
+            }).catch(() => {
+
+                return reject();
             });
         });
     }
