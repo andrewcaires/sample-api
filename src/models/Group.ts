@@ -24,6 +24,6 @@ Group.init({
 }, {
 
     sequelize,
-    modelName: 'group',
+    modelName: 'group'
 
 });

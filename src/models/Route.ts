@@ -21,7 +21,7 @@ Route.init({
     name: DataTypes.STRING,
     permission: DataTypes.STRING,
     description: DataTypes.TEXT,
-    state: DataTypes.BOOLEAN,
+    state: DataTypes.BOOLEAN
 
 }, {
 
