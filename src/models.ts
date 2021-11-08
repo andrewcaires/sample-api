@@ -1,3 +1,4 @@
+import { Auth } from './models/Auth';
 import { Group } from './models/Group';
 import { Logs } from './models/Logs';
 import { Route } from './models/Route';
@@ -5,6 +6,9 @@ import { GroupRoute } from './models/GroupRoute';
 import { User } from './models/User';
 import { UserGroup } from './models/UserGroup';
 import { UserRoute } from './models/UserRoute';
+
+User.hasMany(Auth);
+Auth.belongsTo(User);
 
 Group.hasMany(GroupRoute);
 GroupRoute.belongsTo(Group);
@@ -24,4 +28,4 @@ UserRoute.belongsTo(User);
 Route.hasMany(UserRoute);
 UserRoute.belongsTo(Route);
 
-export { Group, GroupRoute, Logs, Route, User, UserGroup, UserRoute };
+export { Auth, Group, GroupRoute, Logs, Route, User, UserGroup, UserRoute };
