@@ -7,6 +7,8 @@ const toBool = (value: string): boolean => {
     return value === 'true' ? true : false;
 }
 
+export const API_AUTH_SLEEP = parseInt(process.env.API_AUTH_SLEEP || '1000');
+
 export const API_DB_DATABASE = process.env.API_DB_DATABASE!;
 export const API_DB_HOST = process.env.API_DB_HOST || '127.0.0.1';
 export const API_DB_PASSWORD = process.env.API_DB_PASSWORD || '';
