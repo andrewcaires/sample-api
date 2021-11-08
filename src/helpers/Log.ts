@@ -1,6 +1,5 @@
+import { dateFormat } from '@andrewcaires/utils.js';
 import { Logs } from '../models';
-
-import { Utils } from '../helpers/Utils';
 
 enum ColorLog {
 
@@ -17,37 +16,39 @@ export class Log {
 
     static write(message: string, source?: string) {
 
-        Log.writeColor(ColorLog.NONE, '', message, source);
+        Log.writeRaw(ColorLog.NONE, '', message, source);
     }
 
     static error(message: string, source?: string) {
 
-        Log.writeColor(ColorLog.ERROR, 'error', message, source);
+        Log.writeRaw(ColorLog.ERROR, 'error', message, source);
     }
 
     static info(message: string, source?: string) {
 
-        Log.writeColor(ColorLog.INFO, 'info', message, source);
+        Log.writeRaw(ColorLog.INFO, 'info', message, source);
     }
 
     static success(message: string, source?: string) {
 
-        Log.writeColor(ColorLog.ERROR, 'success', message, source);
+        Log.writeRaw(ColorLog.ERROR, 'success', message, source);
     }
 
     static warning(message: string, source?: string) {
 
-        Log.writeColor(ColorLog.WARNING, 'warning', message, source);
+        Log.writeRaw(ColorLog.WARNING, 'warning', message, source);
     }
 
-    private static writeRaw(color: ColorLog, type: TypesLog, message: string) {
+    private static writeConsole(color: ColorLog, type: TypesLog, message: string) {
 
-        console.log('>', color, type + (' ').repeat(10 - type.length), '\x1b[37m', '|', Utils.dateformat(new Date, '%H:%M:%S'), '|', message);
+        const time = dateFormat(new Date, '%H:%M:%S');
+
+        console.log('>', color, type + (' ').repeat(10 - type.length), '\x1b[37m', '|', time, '|', message);
     }
 
-    private static writeColor(color: ColorLog, type: TypesLog, message: string, source?: string) {
+    private static writeRaw(color: ColorLog, type: TypesLog, message: string, source?: string) {
 
-        Log.writeRaw(color, type, message);
+        Log.writeConsole(color, type, message);
 
         Logs.create({ type, source, message }).catch(() => {});
     }
