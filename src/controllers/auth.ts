@@ -1,3 +1,4 @@
+import { filterObject, sleep } from '@andrewcaires/utils.js';
 import { Request, Response } from 'express';
 
 import { User } from '../models';
@@ -7,6 +8,8 @@ import { Responses } from '../helpers/Responses';
 import { Permission } from '../helpers/Permission';
 import { Token } from '../helpers/Token';
 import { Utils } from '../helpers/Utils';
+
+import { API_AUTH_SLEEP } from '../config';
 
 const attributes = ['id', 'name', 'email', 'username'];
 
@@ -19,60 +22,64 @@ export const login = (req: Request, res: Response) => {
         return Responses.error(res, 'Invalid parameters');
     }
 
-    User.findOne({
+    sleep(API_AUTH_SLEEP).then(() => {
 
-        where: { username }
+        User.findOne({
 
-    }).then((user) => {
+            where: { username }
 
-        if (!user) {
+        }).then((user) => {
 
-            return Responses.notfound(res, 'User not found');
-        }
+            if (!user) {
 
-        if (user.password != Utils.md5(password)) {
-
-            return Responses.error(res, 'Invalid password');
-        }
-
-        if (!user.state) {
-
-            return Responses.error(res, 'User is disabled');
-        }
-
-        Token.create(user).then((token) => {
-
-            if (token.length) {
-
-                return Responses.data(res, 'OK', token);
+                return Responses.notfound(res, 'User not found');
             }
+
+            if (user.password != Utils.md5(password)) {
+
+                return Responses.error(res, 'Invalid password');
+            }
+
+            if (!user.state) {
+
+                return Responses.error(res, 'User is disabled');
+            }
+
+            Token.create(user).then((token) => {
+
+                return Responses.data(res, { token });
+
+            }).catch((error) => {
+
+                return Responses.error(res, error);
+            });
+
+        }).catch((error) => {
+
+            Log.error(error.message, 'auth.login');
 
             return Responses.error(res, 'Internal Server Error');
         });
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'auth.login');
-
-        return Responses.error(res, 'Internal Server Error');
     });
 }
 
 export const logout = (req: Request, res: Response) => {
 
-    const user = req.user;
+    const auth = req.auth;
 
-    if (!user) {
+    if (!auth) {
 
         return Responses.unauthorized(res, 'Access denied');
     }
 
-    user.secret = '';
-    user.timestamp = 0;
+    Token.destroy(auth).then(() => {
 
-    user.save();
+        return Responses.success(res, 'Disconcerted');
 
-    return Responses.success(res, 'Disconcerted');
+    }).catch(() => {
+
+        return Responses.error(res, 'Internal Server Error');
+    });
 }
 
 export const user = (req: Request, res: Response) => {
@@ -86,9 +93,9 @@ export const user = (req: Request, res: Response) => {
 
     Permission.allPermission(user.id).then((permissions) => {
 
-        const filter = Utils.filter(attributes, user.toJSON());
+        const filter = filterObject(attributes, user.toJSON());
 
-        return Responses.data(res, 'OK', { ...filter, permissions });
+        return Responses.data(res, { ...filter, permissions });
 
     }).catch((error) => {
 

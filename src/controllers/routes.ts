@@ -7,9 +7,9 @@ import { Responses } from '../helpers/Responses';
 
 export const add = (req: Request, res: Response) => {
 
-    Route.create(req.body).then((route) => {
+    Route.create(req.body).then((record) => {
 
-        return Responses.data(res, 'OK', route.toJSON());
+        return Responses.data(res, record.toJSON());
 
     }).catch((error) => {
 
@@ -21,9 +21,9 @@ export const add = (req: Request, res: Response) => {
 
 export const all = (req: Request, res: Response) => {
 
-    Route.findAll().then((routes) => {
+    Route.findAll().then((records) => {
 
-        return Responses.data(res, 'OK', routes);
+        return Responses.list(res, records);
 
     }).catch((error) => {
 
@@ -45,7 +45,7 @@ export const del = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.notfound(res, 'Route not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
         return Responses.success(res, 'OK');
@@ -62,14 +62,14 @@ export const get = (req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    Route.findByPk(id).then((route) => {
+    Route.findByPk(id).then((record) => {
 
-        if (!route) {
+        if (!record) {
 
-            return Responses.notfound(res, 'Route not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
-        return Responses.data(res, 'OK', route);
+        return Responses.data(res, record.toJSON());
 
     }).catch((error) => {
 
@@ -91,7 +91,7 @@ export const set = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.success(res, 'Route not changed');
+            return Responses.success(res, 'Record not changed');
         }
 
         return Responses.success(res, 'OK');

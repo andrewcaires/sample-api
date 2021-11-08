@@ -1,3 +1,4 @@
+import { filterObject } from '@andrewcaires/utils.js';
 import { Request, Response } from 'express';
 
 import { Group, Route, User, UserGroup, UserRoute } from '../models';
@@ -12,9 +13,9 @@ export const add = (req: Request, res: Response) => {
 
     req.body.password = Utils.md5(req.body.password);
 
-    User.create(req.body).then((user) => {
+    User.create(req.body).then((record) => {
 
-        return Responses.data(res, 'OK', Utils.filter(attributes, user.toJSON()));
+        return Responses.data(res, filterObject(attributes, record.toJSON()));
 
     }).catch((error) => {
 
@@ -30,9 +31,9 @@ export const all = (req: Request, res: Response) => {
 
         attributes
 
-    }).then((users) => {
+    }).then((records) => {
 
-        return Responses.data(res, 'OK', users);
+        return Responses.list(res, records);
 
     }).catch((error) => {
 
@@ -54,7 +55,7 @@ export const del = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.notfound(res, 'User not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
         return Responses.success(res, 'OK');
@@ -75,14 +76,14 @@ export const get = (req: Request, res: Response) => {
 
         attributes
 
-    }).then((user) => {
+    }).then((record) => {
 
-        if (!user) {
+        if (!record) {
 
-            return Responses.notfound(res, 'User not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
-        return Responses.data(res, 'OK', user);
+        return Responses.data(res, record.toJSON());
 
     }).catch((error) => {
 
@@ -103,13 +104,13 @@ export const groupsAll = (req: Request, res: Response) => {
         include: [{
 
             model: Group,
-            required: true,
+            required: true
 
         }]
 
-    }).then((groups) => {
+    }).then((records) => {
 
-        return Responses.data(res, 'OK', groups.map((group) => group.group));
+        return Responses.list(res, records.map((record) => record.group));
 
     }).catch((error) => {
 
@@ -128,14 +129,14 @@ export const groupsSet = (req: Request, res: Response) => {
 
         attributes: ['id']
 
-    }).then(async (user) => {
+    }).then(async (record) => {
 
-        if (!user) {
+        if (!record) {
 
-            return Responses.notfound(res, 'User not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
-        await UserGroup.destroy({ where: { userId: user.id } });
+        await UserGroup.destroy({ where: { userId: record.id } });
 
         if (groups) {
 
@@ -147,7 +148,7 @@ export const groupsSet = (req: Request, res: Response) => {
 
                 if (count) {
 
-                    await UserGroup.create({ userId: user.id, groupId: groups[i] });
+                    await UserGroup.create({ userId: record.id, groupId: groups[i] });
                 }
             }
         }
@@ -173,13 +174,13 @@ export const routesAll = (req: Request, res: Response) => {
         include: [{
 
             model: Route,
-            required: true,
+            required: true
 
         }]
 
-    }).then((routes) => {
+    }).then((records) => {
 
-        return Responses.data(res, 'OK', routes.map((route) => route.route));
+        return Responses.list(res, records.map((record) => record.route));
 
     }).catch((error) => {
 
@@ -198,14 +199,14 @@ export const routesSet = (req: Request, res: Response) => {
 
         attributes: ['id']
 
-    }).then(async (user) => {
+    }).then(async (record) => {
 
-        if (!user) {
+        if (!record) {
 
-            return Responses.notfound(res, 'User not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
-        await UserRoute.destroy({ where: { userId: user.id } });
+        await UserRoute.destroy({ where: { userId: record.id } });
 
         if (routes) {
 
@@ -217,7 +218,7 @@ export const routesSet = (req: Request, res: Response) => {
 
                 if (count) {
 
-                    await UserRoute.create({ userId: user.id, routeId: routes[i] });
+                    await UserRoute.create({ userId: record.id, routeId: routes[i] });
                 }
             }
         }

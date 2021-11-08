@@ -15,7 +15,7 @@ export const all = (req: Request, res: Response) => {
 
     Permission.allPermission(user.id).then((permissions) => {
 
-        return Responses.data(res, 'OK', permissions);
+        return Responses.list(res, permissions);
 
     }).catch((error) => {
 

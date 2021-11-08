@@ -7,9 +7,9 @@ import { Responses } from '../helpers/Responses';
 
 export const add = (req: Request, res: Response) => {
 
-    Group.create(req.body).then((group) => {
+    Group.create(req.body).then((record) => {
 
-        return Responses.data(res, 'OK', group.toJSON());
+        return Responses.data(res, record.toJSON());
 
     }).catch((error) => {
 
@@ -21,9 +21,9 @@ export const add = (req: Request, res: Response) => {
 
 export const all = (req: Request, res: Response) => {
 
-    Group.findAll().then((groups) => {
+    Group.findAll().then((records) => {
 
-        return Responses.data(res, 'OK', groups);
+        return Responses.list(res, records);
 
     }).catch((error) => {
 
@@ -45,7 +45,7 @@ export const del = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.notfound(res, 'Group not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
         return Responses.success(res, 'OK');
@@ -62,14 +62,14 @@ export const get = (req: Request, res: Response) => {
 
     const { id } = req.params;
 
-    Group.findByPk(id).then((group) => {
+    Group.findByPk(id).then((record) => {
 
-        if (!group) {
+        if (!record) {
 
-            return Responses.notfound(res, 'Group not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
-        return Responses.data(res, 'OK', group);
+        return Responses.data(res, record.toJSON());
 
     }).catch((error) => {
 
@@ -90,13 +90,13 @@ export const routesAll = (req: Request, res: Response) => {
         include: [{
 
             model: Route,
-            required: true,
+            required: true
 
         }]
 
-    }).then((routes) => {
+    }).then((records) => {
 
-        return Responses.data(res, 'OK', routes.map((route) => route.route));
+        return Responses.list(res, records.map((record) => record.route));
 
     }).catch((error) => {
 
@@ -115,14 +115,14 @@ export const routesSet = (req: Request, res: Response) => {
 
         attributes: ['id']
 
-    }).then(async (group) => {
+    }).then(async (record) => {
 
-        if (!group) {
+        if (!record) {
 
-            return Responses.notfound(res, 'Group not found');
+            return Responses.notfound(res, 'Record not found');
         }
 
-        const groupId = group.id;
+        const groupId = record.id;
 
         await GroupRoute.destroy({ where: { groupId } });
 
@@ -163,7 +163,7 @@ export const set = (req: Request, res: Response) => {
 
         if (!count) {
 
-            return Responses.success(res, 'Group not changed');
+            return Responses.success(res, 'Record not changed');
         }
 
         return Responses.success(res, 'OK');
