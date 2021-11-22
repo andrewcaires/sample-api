@@ -22,7 +22,7 @@ export const permission = (path: string) => {
                 return Responses.error(res, 'Unauthorized access');
             }
 
-            next();
+            return next();
 
         }).catch((error) => {
 

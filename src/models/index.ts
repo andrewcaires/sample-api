@@ -1,11 +1,11 @@
-import { Auth } from './models/Auth';
-import { Group } from './models/Group';
-import { Logs } from './models/Logs';
-import { Route } from './models/Route';
-import { GroupRoute } from './models/GroupRoute';
-import { User } from './models/User';
-import { UserGroup } from './models/UserGroup';
-import { UserRoute } from './models/UserRoute';
+import { Auth } from './Auth';
+import { Group } from './Group';
+import { Logs } from './Logs';
+import { Route } from './Route';
+import { GroupRoute } from './GroupRoute';
+import { User } from './User';
+import { UserGroup } from './UserGroup';
+import { UserRoute } from './UserRoute';
 
 User.hasMany(Auth);
 Auth.belongsTo(User);
