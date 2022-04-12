@@ -34,7 +34,7 @@ export class Token {
                 return reject('Invalid Secret');
             }
 
-            jwt.verify(token, crt.token, (error, decoded) => {
+            jwt.verify(token, crt.token, (error, decoded: any) => {
 
                 if (error) {
 
