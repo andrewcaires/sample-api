@@ -48,13 +48,8 @@
     "mysql2": "^2.3.3",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-<<<<<<< HEAD
     "sequelize": "^6.17.0",
     "ws": "^8.5.0"
-=======
-    "sequelize": "^6.7.0",
-    "ws": "^8.2.3"
->>>>>>> 8dca9918bc1f5edd29c7bcea17b5b669f417df94
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
