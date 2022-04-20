@@ -1,38 +1,37 @@
-import { NextFunction, Request, Response } from 'express';
-import { ObjectSchema } from 'joi';
+import { NextFunction, Request, Response } from "express";
+import { ObjectSchema } from "joi";
 
-import { Responses } from '../helpers/Responses';
+import { Responses } from "../helpers/Responses";
 
 interface CustomError {
-
-    key: string;
-    type: string;
+  key: string;
+  type: string;
 }
 
 export const validation = (schema: ObjectSchema) => {
 
-    const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
+  const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
 
-    return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
 
-        const { error, value } = schema.validate(req.body, options);
+    const { error, value } = schema.validate(req.body, options);
 
-        if (error) {
+    if (error) {
 
-            const message = error.details.map((detail) => detail.message).join(', ');
+      const message = error.details.map((detail) => detail.message).join(", ");
 
-            const errors: CustomError[] = [];
+      const errors: CustomError[] = [];
 
-            error.details.forEach((detail) => {
+      error.details.forEach((detail) => {
 
-                errors.push({ key: detail.context?.key || '', type: detail.type });
-            });
+        errors.push({ key: detail.context?.key || "", type: detail.type });
+      });
 
-            return Responses.validation(res, 'Validation error: ' + message, errors);
-        }
-
-        req.body = value;
-
-        return next();
+      return Responses.validation(res, "Validation error: " + message, errors);
     }
-}
+
+    req.body = value;
+
+    return next();
+  };
+};

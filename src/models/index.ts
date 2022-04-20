@@ -1,11 +1,10 @@
-import { Auth } from './Auth';
-import { Group } from './Group';
-import { Logs } from './Logs';
-import { Route } from './Route';
-import { GroupRoute } from './GroupRoute';
-import { User } from './User';
-import { UserGroup } from './UserGroup';
-import { UserRoute } from './UserRoute';
+import { Auth } from "./Auth";
+import { Group } from "./Group";
+import { Logs } from "./Logs";
+import { Route } from "./Route";
+import { GroupRoute } from "./GroupRoute";
+import { User } from "./User";
+import { UserGroup } from "./UserGroup";
 
 User.hasMany(Auth);
 Auth.belongsTo(User);
@@ -22,10 +21,4 @@ UserGroup.belongsTo(User);
 Group.hasMany(UserGroup);
 UserGroup.belongsTo(Group);
 
-User.hasMany(UserRoute);
-UserRoute.belongsTo(User);
-
-Route.hasMany(UserRoute);
-UserRoute.belongsTo(Route);
-
-export { Auth, Group, GroupRoute, Logs, Route, User, UserGroup, UserRoute };
+export { Auth, Group, GroupRoute, Logs, Route, User, UserGroup };

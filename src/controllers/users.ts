@@ -1,264 +1,108 @@
-import { filterObject } from '@andrewcaires/utils.js';
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Group, Route, User, UserGroup, UserRoute } from '../models';
+import { Group, User, UserGroup } from "../models";
 
-import { Log } from '../helpers/Log';
-import { Responses } from '../helpers/Responses';
-import { Utils } from '../helpers/Utils';
+import { Controller } from "../helpers/Controller";
+import { Log } from "../helpers/Log";
+import { Responses } from "../helpers/Responses";
+import { Utils } from "../helpers/Utils";
 
-const attributes = ['id', 'name', 'email', 'username', 'description', 'state'];
+const controller = new Controller("user", User);
 
-export const add = (req: Request, res: Response) => {
+const attributes = ["id", "name", "email", "username", "description", "state"];
 
-    req.body.password = Utils.md5(req.body.password);
+export const add = async (req: Request, res: Response) => {
 
-    User.create(req.body).then((record) => {
+  req.body.password = Utils.md5(req.body.password);
 
-        return Responses.data(res, filterObject(attributes, record.toJSON()));
+  return await controller.add()(req, res);
+};
 
-    }).catch((error) => {
+export const all = async (req: Request, res: Response) => {
 
-        Log.error(error.message, 'users.add');
+  return controller.all({ attributes })(req, res);
+};
 
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+export const del = controller.del();
 
-export const all = (req: Request, res: Response) => {
+export const get = async (req: Request, res: Response) => {
 
-    User.findAll({
+  return controller.get({ attributes })(req, res);
+};
 
-        attributes
+export const groupsAll = async (req: Request, res: Response) => {
 
-    }).then((records) => {
+  const { id } = req.params;
 
-        return Responses.list(res, records);
+  const records = await UserGroup.findAll({
 
-    }).catch((error) => {
+    where: { userId: id },
 
-        Log.error(error.message, 'users.all');
+    include: [{
 
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+      model: Group,
+      required: true,
 
-export const del = (req: Request, res: Response) => {
+    }],
 
-    const { id } = req.params;
+  }).catch((error) => {
 
-    User.destroy({
+    Log.error(error.message, "user.groups.all");
+  });
 
-        where: { id }
+  if (records) {
 
-    }).then((count) => {
+    return Responses.list(res, records.map((record) => record.group));
+  }
 
-        if (!count) {
+  return Responses.error(res, "Internal Server Error");
+};
 
-            return Responses.notfound(res, 'Record not found');
+export const groupsSet = async (req: Request, res: Response) => {
+
+  const { id } = req.params;
+  const { groups } = req.body;
+
+  const record = await User.findByPk(id, {
+
+    attributes: ["id"],
+
+  }).catch((error) => {
+
+    Log.error(error.message, "user.groups.set");
+  });
+
+  if (record) {
+
+    await UserGroup.destroy({ where: { userId: record.id } });
+
+    if (groups) {
+
+      let count = 0;
+
+      for (let i = 0; i < groups.length; i++) {
+
+        count = await Group.count({ where: { id: groups[i] } });
+
+        if (count) {
+
+          await UserGroup.create({ userId: record.id, groupId: groups[i] });
         }
-
-        return Responses.success(res, 'OK');
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.del');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const get = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    User.findByPk(id, {
-
-        attributes
-
-    }).then((record) => {
-
-        if (!record) {
-
-            return Responses.notfound(res, 'Record not found');
-        }
-
-        return Responses.data(res, record.toJSON());
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.get');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const groupsAll = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    UserGroup.findAll({
-
-        where: { userId: id },
-
-        include: [{
-
-            model: Group,
-            required: true
-
-        }]
-
-    }).then((records) => {
-
-        return Responses.list(res, records.map((record) => record.group));
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.groupsAll');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const groupsSet = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-    const { groups } = req.body;
-
-    User.findByPk(id, {
-
-        attributes: ['id']
-
-    }).then(async (record) => {
-
-        if (!record) {
-
-            return Responses.notfound(res, 'Record not found');
-        }
-
-        await UserGroup.destroy({ where: { userId: record.id } });
-
-        if (groups) {
-
-            let count = 0;
-
-            for (let i = 0; i < groups.length; i++) {
-
-                count = await Group.count({ where: { id: groups[i] } });
-
-                if (count) {
-
-                    await UserGroup.create({ userId: record.id, groupId: groups[i] });
-                }
-            }
-        }
-
-        return Responses.success(res, 'OK');
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.groupsSet');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const routesAll = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    UserRoute.findAll({
-
-        where: { userId: id },
-
-        include: [{
-
-            model: Route,
-            required: true
-
-        }]
-
-    }).then((records) => {
-
-        return Responses.list(res, records.map((record) => record.route));
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.routesAll');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const routesSet = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-    const { routes } = req.body;
-
-    User.findByPk(id, {
-
-        attributes: ['id']
-
-    }).then(async (record) => {
-
-        if (!record) {
-
-            return Responses.notfound(res, 'Record not found');
-        }
-
-        await UserRoute.destroy({ where: { userId: record.id } });
-
-        if (routes) {
-
-            let count = 0;
-
-            for (let i = 0; i < routes.length; i++) {
-
-                count = await Route.count({ where: { id: routes[i] } });
-
-                if (count) {
-
-                    await UserRoute.create({ userId: record.id, routeId: routes[i] });
-                }
-            }
-        }
-
-        return Responses.success(res, 'OK');
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.routesSet');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const set = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    if (req.body.password) {
-
-        req.body.password = Utils.md5(req.body.password);
+      }
     }
 
-    User.update(req.body, {
+    return Responses.success(res, "OK");
+  }
 
-        where: { id }
+  return Responses.notfound(res, "Record not found");
+};
 
-    }).then(([count]) => {
+export const set = async (req: Request, res: Response) => {
 
-        if (!count) {
+  if (req.body.password) {
 
-            return Responses.success(res, 'User not changed');
-        }
+    req.body.password = Utils.md5(req.body.password);
+  }
 
-        return Responses.success(res, 'OK');
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'users.set');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+  return controller.set()(req, res);
+};

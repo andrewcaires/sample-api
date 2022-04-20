@@ -1,106 +1,156 @@
-import { filterObject, sleep } from '@andrewcaires/utils.js';
-import { Request, Response } from 'express';
+import { allowedObject, sleep } from "@andrewcaires/utils.js";
+import { SHA256 } from "crypto-js";
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 
-import { User } from '../models';
+import { Auth, Group, GroupRoute, Route, User, UserGroup } from "../models";
 
-import { Log } from '../helpers/Log';
-import { Responses } from '../helpers/Responses';
-import { Permission } from '../helpers/Permission';
-import { Token } from '../helpers/Token';
-import { Utils } from '../helpers/Utils';
+import { Log } from "../helpers/Log";
+import { Responses } from "../helpers/Responses";
 
-import { API_AUTH_SLEEP } from '../config';
+import { API_AUTH_SLEEP, API_TOKEN_LIFETIME } from "../config";
+import { key } from "../ssl";
+import { Utils } from "../helpers/Utils";
 
-const attributes = ['id', 'name', 'email', 'username'];
+const attributes = ["id", "name", "email", "username"];
 
-export const login = (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
 
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    if (!username || !password) {
+  if (!username || !password) {
 
-        return Responses.error(res, 'Invalid parameters');
-    }
+    return Responses.error(res, "Invalid parameters");
+  }
 
-    sleep(API_AUTH_SLEEP).then(() => {
+  await sleep(API_AUTH_SLEEP);
 
-        User.findOne({
+  const user = await User.findOne({
 
-            where: { username }
+    where: { username },
 
-        }).then((user) => {
+  }).catch((error) => {
 
-            if (!user) {
+    Log.error(error.message, "auth.login");
+  });
 
-                return Responses.notfound(res, 'User not found');
-            }
+  if (!user) {
 
-            if (user.password != Utils.md5(password)) {
+    return Responses.notfound(res, "User not found");
+  }
 
-                return Responses.error(res, 'Invalid password');
-            }
+  if (!user.state) {
 
-            if (!user.state) {
+    return Responses.error(res, "User is disabled");
+  }
 
-                return Responses.error(res, 'User is disabled');
-            }
+  const hash = SHA256(password).toString();
 
-            Token.create(user).then((token) => {
+  if (user.password != hash) {
 
-                return Responses.data(res, { token });
+    return Responses.error(res, "Invalid password");
+  }
 
-            }).catch((error) => {
+  if (!key.token) {
 
-                return Responses.error(res, error);
-            });
+    return Responses.error(res, "Invalid Secret");
+  }
 
-        }).catch((error) => {
+  const id = user.id;
+  const secret = Utils.hash();
 
-            Log.error(error.message, 'auth.login');
+  const token = jwt.sign({ id, secret }, key.token, { algorithm: "RS256" });
 
-            return Responses.error(res, 'Internal Server Error');
-        });
-    });
-}
+  if (token) {
 
-export const logout = (req: Request, res: Response) => {
+    const login = Date.now();
+    const timestamp = login + (API_TOKEN_LIFETIME * 60000);
 
-    const auth = req.auth;
+    const useragent = req.get("User-Agent");
 
-    if (!auth) {
+    const auth = await Auth.create({
 
-        return Responses.unauthorized(res, 'Access denied');
-    }
-
-    Token.destroy(auth).then(() => {
-
-        return Responses.success(res, 'Disconcerted');
-
-    }).catch(() => {
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const user = (req: Request, res: Response) => {
-
-    const user = req.user;
-
-    if (!user) {
-
-        return Responses.unauthorized(res, 'Access denied');
-    }
-
-    Permission.allPermission(user.id).then((permissions) => {
-
-        const filter = filterObject(attributes, user.toJSON());
-
-        return Responses.data(res, { ...filter, permissions });
+      login, secret, timestamp, useragent, userId: id,
 
     }).catch((error) => {
 
-        Log.error(error.message, 'auth.user');
-
-        return Responses.error(res, 'Internal Server Error');
+      Log.error(error.message, "auth.login");
     });
-}
+
+    if (auth) {
+
+      return Responses.data(res, { token });
+    }
+  }
+
+  return Responses.error(res, "Internal Server Error");
+};
+
+export const logout = async (req: Request, res: Response) => {
+
+  const auth = req.auth;
+
+  if (!auth) {
+
+    return Responses.unauthorized(res, "Access denied");
+  }
+
+  auth.logout = Date.now();
+  auth.timestamp = auth.logout;
+
+  await auth.save();
+
+  return Responses.success(res, "Disconcerted");
+};
+
+export const user = async (req: Request, res: Response) => {
+
+  const user = req.user;
+
+  if (!user) {
+
+    return Responses.unauthorized(res, "Access denied");
+  }
+
+  const records = await Route.findAll({
+
+    where: { state: true },
+
+    include: [{
+
+      model: GroupRoute,
+      required: true,
+
+      include: [{
+
+        model: Group,
+        required: true,
+        where: { state: true },
+
+        include: [{
+
+          model: UserGroup,
+          required: true,
+          where: { userId: user.id },
+
+        }],
+
+      }],
+
+    }],
+
+  }).catch((error) => {
+
+    Log.error(error.message, "auth.user");
+  });
+
+  if (records) {
+
+    const filter = allowedObject(attributes, user.toJSON());
+    const permissions = records.map((record) => record.name);
+
+    return Responses.data(res, { ...filter, permissions });
+  }
+
+  return Responses.error(res, "Internal Server Error");
+};

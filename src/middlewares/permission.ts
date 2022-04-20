@@ -1,34 +1,58 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 
-import { Log } from '../helpers/Log';
-import { Permission } from '../helpers/Permission';
-import { Responses } from '../helpers/Responses';
+import { Log } from "../helpers/Log";
+import { Responses } from "../helpers/Responses";
 
-export const permission = (path: string) => {
+import { Group, GroupRoute, Route, UserGroup } from "../models";
 
-    return (req: Request, res: Response, next: NextFunction) => {
+export const permission = (name: string) => {
 
-        const user = req.user;
+  return async (req: Request, res: Response, next: NextFunction) => {
 
-        if (!user) {
+    const user = req.user;
 
-            return Responses.unauthorized(res, 'Access denied');
-        }
+    if (!user) {
 
-        Permission.isPermission(user.id, path).then((allowed) => {
-
-            if (!allowed) {
-
-                return Responses.error(res, 'Unauthorized access');
-            }
-
-            return next();
-
-        }).catch((error) => {
-
-            Log.error('permission -> ' + error.message);
-
-            return Responses.error(res, 'Internal Server Error');
-        });
+      return Responses.unauthorized(res, "Access denied");
     }
-}
+
+    const records = await Route.findAll({
+
+      where: { name, state: true },
+
+      include: [{
+
+        model: GroupRoute,
+        required: true,
+
+        include: [{
+
+          model: Group,
+          required: true,
+          where: { state: true },
+
+          include: [{
+
+            model: UserGroup,
+            required: true,
+            where: { userId: user.id },
+
+          }],
+
+        }],
+
+      }],
+
+    }).catch((error) => {
+
+      Log.error(error.message, "permission");
+    });
+
+    if (records && records.length) {
+
+      return next();
+    }
+
+    return Responses.error(res, "Unauthorized access");
+  };
+};

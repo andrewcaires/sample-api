@@ -1,3 +1,3 @@
-import { initialize } from '.';
+import { initialize } from ".";
 
 initialize();

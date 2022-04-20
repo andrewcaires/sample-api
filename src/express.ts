@@ -1,12 +1,12 @@
-import cors from 'cors';
-import express, { Request, Response, NextFunction } from 'express';
-import { existsSync } from 'fs';
+import cors from "cors";
+import express, { Request, Response, NextFunction } from "express";
+import { existsSync } from "fs";
 
-import { API_HTTP_CROSS, API_HTTP_PUBLIC } from './config';
-import { router } from './router';
+import { API_HTTP_CROSS, API_HTTP_PUBLIC } from "./config";
+import { router } from "./router";
 
-import { Log } from './helpers/Log';
-import { Responses } from './helpers/Responses';
+import { Log } from "./helpers/Log";
+import { Responses } from "./helpers/Responses";
 
 export const app = express();
 
@@ -14,46 +14,46 @@ app.use(express.json());
 
 app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 
-    if (error) {
+  if (error) {
 
-        Log.error(error.message, 'express');
+    Log.error(error.message, "express");
 
-        return Responses.error(res, 'Internal Server Error');
-    }
+    return Responses.error(res, "Internal Server Error");
+  }
 
-    return next();
+  return next();
 });
 
 app.use(express.urlencoded({ extended: true }));
 
-app.disable('x-powered-by');
+app.disable("x-powered-by");
 
 if (API_HTTP_CROSS) {
 
-    app.use(cors());
+  app.use(cors());
 }
 
-app.use('/api', router);
+app.use("/api", router);
 
-app.all('/api/*', (req: express.Request, res: express.Response) => {
+app.all("/api/*", (req: express.Request, res: express.Response) => {
 
-    return Responses.notfound(res, 'Invalid API');
+  return Responses.notfound(res, "Invalid API");
 });
 
 if (API_HTTP_PUBLIC) {
 
-    if (existsSync(API_HTTP_PUBLIC)) {
+  if (existsSync(API_HTTP_PUBLIC)) {
 
-        app.use(express.static(API_HTTP_PUBLIC));
+    app.use(express.static(API_HTTP_PUBLIC));
+  }
+
+  app.get("*", (req: express.Request, res: express.Response) => {
+
+    if (!existsSync(API_HTTP_PUBLIC)) {
+
+      return Responses.notfound(res, "File \"index.html\" not found");
     }
 
-    app.get('*', (req: express.Request, res: express.Response) => {
-
-        if (!existsSync(API_HTTP_PUBLIC)) {
-
-            return Responses.notfound(res, 'File "index.html" not found');
-        }
-
-        res.sendFile(API_HTTP_PUBLIC + '/index.html');
-    });
+    res.sendFile(API_HTTP_PUBLIC + "/index.html");
+  });
 }

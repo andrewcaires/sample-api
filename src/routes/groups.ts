@@ -1,32 +1,32 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import { add, all, del, get, routesAll, routesSet, set } from '../controllers/groups';
+import { add, all, del, get, routesAll, routesSet, set } from "../controllers/groups";
 
-import { auth } from '../middlewares/auth';
-import { permission } from '../middlewares/permission';
+import { auth } from "../middlewares/auth";
+import { permission } from "../middlewares/permission";
 
-import { createValidation, routesValidation, updateValidation } from '../validation/groups';
+import { createValidation, routesValidation, updateValidation } from "../validation/groups";
 
 const router = Router();
 
 router.use(auth);
 
-router.get('/', permission('groups.read'), all);
+router.get("/", permission("groups.read"), all);
 
-router.post('/', permission('groups.write'), createValidation, add);
+router.post("/", permission("groups.write"), createValidation, add);
 
-router.route('/:id')
+router.route("/:id")
 
-    .get(permission('groups.read'), get)
+  .get(permission("groups.read"), get)
 
-    .put(permission('groups.write'), updateValidation, set)
+  .put(permission("groups.write"), updateValidation, set)
 
-    .delete(permission('groups.write'), del);
+  .delete(permission("groups.write"), del);
 
-router.route('/routes/:id')
+router.route("/routes/:id")
 
-    .get(permission('groups.read'), routesValidation, routesAll)
+  .get(permission("groups.read"), routesValidation, routesAll)
 
-    .put(permission('groups.write'), routesValidation, routesSet);
+  .put(permission("groups.write"), routesValidation, routesSet);
 
 export default router;

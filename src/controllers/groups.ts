@@ -1,177 +1,94 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-import { Group, GroupRoute, Route } from '../models';
+import { Group, GroupRoute, Route } from "../models";
 
-import { Log } from '../helpers/Log';
-import { Responses } from '../helpers/Responses';
+import { Log } from "../helpers/Log";
+import { Responses } from "../helpers/Responses";
 
-export const add = (req: Request, res: Response) => {
+import { Controller } from "../helpers/Controller";
 
-    Group.create(req.body).then((record) => {
+const controller = new Controller("groups", Group);
 
-        return Responses.data(res, record.toJSON());
+export const add = controller.add();
 
-    }).catch((error) => {
+export const all = controller.all();
 
-        Log.error(error.message, 'groups.add');
+export const del = controller.del();
 
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+export const get = controller.get();
 
-export const all = (req: Request, res: Response) => {
+export const routesAll = async (req: Request, res: Response) => {
 
-    Group.findAll().then((records) => {
+  const { id } = req.params;
 
-        return Responses.list(res, records);
+  const records = await GroupRoute.findAll({
 
-    }).catch((error) => {
+    where: { groupId: id },
 
-        Log.error(error.message, 'groups.all');
+    include: [{
 
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+      model: Route,
+      required: true,
 
-export const del = (req: Request, res: Response) => {
+    }],
 
-    const { id } = req.params;
+  }).catch((error) => {
 
-    Group.destroy({
+    Log.error(error.message, "groups.routesAll");
+  });
 
-        where: { id }
+  if (records) {
 
-    }).then((count) => {
+    return Responses.list(res, records.map((record) => record.route));
+  }
 
-        if (!count) {
+  return Responses.error(res, "Internal Server Error");
+};
 
-            return Responses.notfound(res, 'Record not found');
+export const routesSet = async (req: Request, res: Response) => {
+
+  const { id } = req.params;
+  const { routes } = req.body;
+
+  const record = await Group.findByPk(id, {
+
+    attributes: ["id"],
+
+  }).catch((error) => {
+
+    Log.error(error.message, "groups.routesSet");
+  });
+
+  if (record) {
+
+    const groupId = record.id;
+
+    await GroupRoute.destroy({ where: { groupId } });
+
+    if (routes) {
+
+      let count = 0;
+
+      for (let i = 0; i < routes.length; i++) {
+
+        count = await Route.count({ where: { id: routes[i] } });
+
+        if (count) {
+
+          await GroupRoute.create({ groupId, routeId: routes[i] });
         }
+      }
+    }
 
-        return Responses.success(res, 'OK');
+    return Responses.success(res, "OK");
+  }
 
-    }).catch((error) => {
+  if (record === null) {
 
-        Log.error(error.message, 'groups.del');
+    return Responses.notfound(res, "Record not found");
+  }
 
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+  return Responses.error(res, "Internal Server Error");
+};
 
-export const get = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    Group.findByPk(id).then((record) => {
-
-        if (!record) {
-
-            return Responses.notfound(res, 'Record not found');
-        }
-
-        return Responses.data(res, record.toJSON());
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'groups.get');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const routesAll = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    GroupRoute.findAll({
-
-        where: { groupId: id },
-
-        include: [{
-
-            model: Route,
-            required: true
-
-        }]
-
-    }).then((records) => {
-
-        return Responses.list(res, records.map((record) => record.route));
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'groups.routesAll');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const routesSet = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-    const { routes } = req.body;
-
-    Group.findByPk(id, {
-
-        attributes: ['id']
-
-    }).then(async (record) => {
-
-        if (!record) {
-
-            return Responses.notfound(res, 'Record not found');
-        }
-
-        const groupId = record.id;
-
-        await GroupRoute.destroy({ where: { groupId } });
-
-        if (routes) {
-
-            let count = 0;
-
-            for (let i = 0; i < routes.length; i++) {
-
-                count = await Route.count({ where: { id: routes[i] } });
-
-                if (count) {
-
-                    await GroupRoute.create({ groupId, routeId: routes[i] });
-                }
-            }
-        }
-
-        return Responses.success(res, 'OK');
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'groups.routesSet');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
-
-export const set = (req: Request, res: Response) => {
-
-    const { id } = req.params;
-
-    Group.update(req.body, {
-
-        where: { id }
-
-    }).then(([count]) => {
-
-        if (!count) {
-
-            return Responses.success(res, 'Record not changed');
-        }
-
-        return Responses.success(res, 'OK');
-
-    }).catch((error) => {
-
-        Log.error(error.message, 'groups.set');
-
-        return Responses.error(res, 'Internal Server Error');
-    });
-}
+export const set = controller.set();

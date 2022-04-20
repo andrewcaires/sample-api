@@ -1,57 +1,90 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
 import { Auth, User } from "../models";
 
-import { Responses } from '../helpers/Responses';
-import { Token } from '../helpers/Token';
+import { Log } from "../helpers/Log";
+import { Responses } from "../helpers/Responses";
 
-import { API_TOKEN_HEADER, API_TOKEN_LIFETIME } from '../config';
+import { API_TOKEN_HEADER, API_TOKEN_LIFETIME } from "../config";
+import { crt } from "../ssl";
 
 declare global {
-
-    namespace Express {
-
-        interface Request {
-
-            auth: Auth | undefined;
-            user: User | undefined;
-        }
+  namespace Express {
+    interface Request {
+      auth: Auth | undefined;
+      user: User | undefined;
     }
+  }
 }
 
-export const auth = (req: Request, res: Response, next: NextFunction) => {
+export const auth = async (req: Request, res: Response, next: NextFunction) => {
 
-    const token = req.get(API_TOKEN_HEADER) || '';
+  const token = req.get(API_TOKEN_HEADER) || "";
 
-    Token.check(token).then((token) => {
+  if (!crt.token) {
 
-        const auth = token.auth;
+    return Responses.error(res, "Invalid Secret");
+  }
 
-        req.auth = auth;
-        req.user = token.user;
+  if (!token || token.split(".").length < 3) {
 
-        const useragent = req.get('User-Agent');
+    return Responses.error(res, "Invalid token");
+  }
 
-        if (useragent) {
+  const decode: any = jwt.verify(token, crt.token);
 
-            auth.useragent = useragent;
-        }
+  if (decode && decode.id && decode.secret) {
 
-        const time = Date.now();
+    const user = await User.findOne({
 
-        auth.timestamp = time + (API_TOKEN_LIFETIME * 60000);
-
-        auth.save().then(() => {
-
-            return next();
-
-        }).catch(() => {
-
-            return Responses.error(res, 'Internal Server Error');
-        });
+      where: { id: decode.id },
 
     }).catch((error) => {
 
-        return Responses.error(res, error);
+      Log.error(error.message, "token.check");
     });
-}
+
+    if (user && user.state) {
+
+      const auth = await Auth.findOne({
+
+        where: { logout: null, secret: decode.secret, userId: user.id },
+
+      }).catch((error) => {
+
+        Log.error(error.message, "token.check");
+      });
+
+      if (auth) {
+
+        const time = Date.now();
+
+        if (time > auth.timestamp) {
+
+          return Responses.error(res, "Expired token");
+        }
+
+        auth.timestamp = time + (API_TOKEN_LIFETIME * 60000);
+
+        const useragent = req.get("User-Agent");
+
+        if (useragent) {
+
+          auth.useragent = useragent;
+        }
+
+        await auth.save();
+
+        req.auth = auth;
+        req.user = user;
+
+        return next();
+      }
+    }
+
+    return Responses.error(res, "Access denied");
+  }
+
+  return Responses.error(res, "Invalid token");
+};
