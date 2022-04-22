@@ -20,6 +20,3 @@ logs
 
 # npm package-lock
 package-lock.json
-
-# vscode
-.vscode
