@@ -1,11 +1,7 @@
+import { toBool } from "@andrewcaires/utils.js";
 import { config } from "dotenv";
 
 config();
-
-const toBool = (value: string): boolean => {
-
-  return value === "true" ? true : false;
-};
 
 export const API_AUTH_SLEEP = parseInt(process.env.API_AUTH_SLEEP || "1000");
 
