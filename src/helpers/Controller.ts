@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { Model, ModelStatic } from "sequelize";
+import { Attributes, FindOptions, Model, ModelStatic } from "sequelize";
 
 import { Log } from "../helpers/Log";
 import { Responses } from "../helpers/Responses";
 
-export class Controller<T extends Model<T>> {
+export class Controller<M extends Model<M>> {
 
   private log: string;
-  private model: ModelStatic<T>;
+  private model: ModelStatic<M>;
 
-  constructor(log: string, model: ModelStatic<T>) {
+  constructor(log: string, model: ModelStatic<M>) {
 
     this.log = log;
     this.model = model;
@@ -33,11 +33,30 @@ export class Controller<T extends Model<T>> {
     };
   }
 
-  public all(...args: Array<any>) {
+  public all(options?: FindOptions<Attributes<M>>) {
 
     return async (req: Request, res: Response) => {
 
-      const records = await this.model.findAll(...args).catch((error) => {
+      if (!options) {
+
+        options = {};
+      }
+
+      const limit = req.query.limit?.toString();
+
+      if (limit) {
+
+        options.limit = parseInt(limit);
+      }
+
+      const offset = req.query.offset?.toString();
+
+      if (offset) {
+
+        options.offset = parseInt(offset);
+      }
+
+      const records = await this.model.findAll(options).catch((error) => {
 
         Log.error(error.message, this.log + ".all");
       });
@@ -49,7 +68,7 @@ export class Controller<T extends Model<T>> {
 
       if (records) {
 
-        return Responses.data(res, { list: records, count });
+        return Responses.data(res, { data: records, count });
       }
 
       return Responses.error(res, "Internal Server Error");
@@ -80,13 +99,18 @@ export class Controller<T extends Model<T>> {
     };
   }
 
-  public get(...args: Array<any>) {
+  public get(options?: FindOptions<Attributes<M>>) {
 
     return async (req: Request, res: Response) => {
 
+      if (!options) {
+
+        options = {};
+      }
+
       const { id } = req.params;
 
-      const record = await this.model.findByPk(id, ...args).catch((error) => {
+      const record = await this.model.findByPk(id, options).catch((error) => {
 
         Log.error(error.message, this.log + ".get");
       });
