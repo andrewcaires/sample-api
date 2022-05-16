@@ -7,9 +7,10 @@ export * from "./sequelize";
 export * from "./ssl";
 export * from "./websocket";
 
+export * from "./helpers/Controller";
 export * from "./helpers/Log";
+export * from "./helpers/Permission";
 export * from "./helpers/Responses";
-export * from "./helpers/Utils";
 
 export * from "./middlewares/auth";
 export * from "./middlewares/permission";

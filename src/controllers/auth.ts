@@ -1,16 +1,16 @@
-import { allowedObject, sleep } from "@andrewcaires/utils.js";
+import { allowedObject, uniqueID, sleep } from "@andrewcaires/utils.js";
 import { SHA256 } from "crypto-js";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 
-import { Auth, Group, GroupRoute, Route, User, UserGroup } from "../models";
+import { Auth, User } from "../models";
 
 import { Log } from "../helpers/Log";
 import { Responses } from "../helpers/Responses";
 
 import { API_AUTH_SLEEP, API_TOKEN_LIFETIME } from "../config";
 import { key } from "../ssl";
-import { Utils } from "../helpers/Utils";
+import { Permission } from "../helpers/Permission";
 
 const attributes = ["id", "name", "email", "username"];
 
@@ -57,7 +57,7 @@ export const login = async (req: Request, res: Response) => {
   }
 
   const id = user.id;
-  const secret = Utils.hash();
+  const secret = uniqueID();
 
   const token = jwt.sign({ id, secret }, key.token, { algorithm: "RS256" });
 
@@ -112,37 +112,7 @@ export const user = async (req: Request, res: Response) => {
     return Responses.unauthorized(res, "Access denied");
   }
 
-  const records = await Route.findAll({
-
-    where: { state: true },
-
-    include: [{
-
-      model: GroupRoute,
-      required: true,
-
-      include: [{
-
-        model: Group,
-        required: true,
-        where: { state: true },
-
-        include: [{
-
-          model: UserGroup,
-          required: true,
-          where: { userId: user.id },
-
-        }],
-
-      }],
-
-    }],
-
-  }).catch((error) => {
-
-    Log.error(error.message, "auth.user");
-  });
+  const records = await Permission.all(user);
 
   if (records) {
 

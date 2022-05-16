@@ -1,3 +1,4 @@
+import { uuidv4 } from "@andrewcaires/utils.js";
 import { Response, Request, NextFunction } from "express";
 import { existsSync } from "fs";
 import mime from "mime-types";
@@ -5,7 +6,6 @@ import multer from "multer";
 import { join } from "path";
 
 import { Responses } from "../helpers/Responses";
-import { Utils } from "../helpers/Utils";
 
 import { API_UPLOAD_COUNT, API_UPLOAD_FIELD, API_UPLOAD_SIZE, API_UPLOAD_TEMP } from "../config";
 
@@ -19,10 +19,7 @@ interface UploadOptions {
 
 const getFileName = (path: string, ext: string): string => {
 
-  const date = new Date;
-  const time = date.getTime();
-
-  const name = Utils.hash() + "." + time + "." + ext;
+  const name = uuidv4() + "." + ext;
 
   if (existsSync(join(path, name))) {
 

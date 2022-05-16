@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { Log } from "../helpers/Log";
+import { Permission } from "../helpers/Permission";
 import { Responses } from "../helpers/Responses";
-
-import { Group, GroupRoute, Route, UserGroup } from "../models";
 
 export const permission = (name: string) => {
 
@@ -16,39 +14,7 @@ export const permission = (name: string) => {
       return Responses.unauthorized(res, "Access denied");
     }
 
-    const records = await Route.findAll({
-
-      where: { name, state: true },
-
-      include: [{
-
-        model: GroupRoute,
-        required: true,
-
-        include: [{
-
-          model: Group,
-          required: true,
-          where: { state: true },
-
-          include: [{
-
-            model: UserGroup,
-            required: true,
-            where: { userId: user.id },
-
-          }],
-
-        }],
-
-      }],
-
-    }).catch((error) => {
-
-      Log.error(error.message, "permission");
-    });
-
-    if (records && records.length) {
+    if (await Permission.is(user, name)) {
 
       return next();
     }

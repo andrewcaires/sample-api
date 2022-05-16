@@ -23,7 +23,7 @@ router.route("/:id")
 
   .delete(permission("users.write"), del);
 
-router.route("/groups/:id")
+router.route("/:id/groups")
 
   .get(permission("users.read"), groupsAll)
 

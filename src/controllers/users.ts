@@ -1,3 +1,4 @@
+import { SHA256 } from "crypto-js";
 import { Request, Response } from "express";
 
 import { Group, User, UserGroup } from "../models";
@@ -5,15 +6,15 @@ import { Group, User, UserGroup } from "../models";
 import { Controller } from "../helpers/Controller";
 import { Log } from "../helpers/Log";
 import { Responses } from "../helpers/Responses";
-import { Utils } from "../helpers/Utils";
 
 const controller = new Controller("user", User);
+const controller2 = new Controller("user.groups", UserGroup);
 
 const attributes = ["id", "name", "email", "username", "description", "state"];
 
 export const add = async (req: Request, res: Response) => {
 
-  req.body.password = Utils.md5(req.body.password);
+  req.body.password = SHA256(req.body.password).toString();
 
   return await controller.add()(req, res);
 };
@@ -34,7 +35,7 @@ export const groupsAll = async (req: Request, res: Response) => {
 
   const { id } = req.params;
 
-  const records = await UserGroup.findAll({
+  return controller2.all({
 
     where: { userId: id },
 
@@ -45,17 +46,11 @@ export const groupsAll = async (req: Request, res: Response) => {
 
     }],
 
-  }).catch((error) => {
+  }, (records) => {
 
-    Log.error(error.message, "user.groups.all");
-  });
+    return records.map((record) => record.group);
 
-  if (records) {
-
-    return Responses.list(res, records.map((record) => record.group));
-  }
-
-  return Responses.error(res, "Internal Server Error");
+  })(req, res);
 };
 
 export const groupsSet = async (req: Request, res: Response) => {
@@ -101,7 +96,7 @@ export const set = async (req: Request, res: Response) => {
 
   if (req.body.password) {
 
-    req.body.password = Utils.md5(req.body.password);
+    req.body.password = SHA256(req.body.password).toString();
   }
 
   return controller.set()(req, res);

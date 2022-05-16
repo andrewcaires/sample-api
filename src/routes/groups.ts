@@ -23,7 +23,7 @@ router.route("/:id")
 
   .delete(permission("groups.write"), del);
 
-router.route("/routes/:id")
+router.route("/:id/routes")
 
   .get(permission("groups.read"), routesValidation, routesAll)
 

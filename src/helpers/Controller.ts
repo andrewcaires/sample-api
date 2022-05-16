@@ -4,6 +4,9 @@ import { Attributes, FindOptions, Model, ModelStatic } from "sequelize";
 import { Log } from "../helpers/Log";
 import { Responses } from "../helpers/Responses";
 
+type FnRecord<M> = (records: M) => any;
+type FnRecords<M> = (records: Array<M>) => Array<any>;
+
 export class Controller<M extends Model<M>> {
 
   private log: string;
@@ -33,7 +36,7 @@ export class Controller<M extends Model<M>> {
     };
   }
 
-  public all(options?: FindOptions<Attributes<M>>) {
+  public all(options?: FindOptions<Attributes<M>>, fn?: FnRecords<M>) {
 
     return async (req: Request, res: Response) => {
 
@@ -68,7 +71,7 @@ export class Controller<M extends Model<M>> {
 
       if (records) {
 
-        return Responses.data(res, { data: records, count });
+        return Responses.data(res, { count, records: fn ? fn(records) : records });
       }
 
       return Responses.error(res, "Internal Server Error");
@@ -99,7 +102,7 @@ export class Controller<M extends Model<M>> {
     };
   }
 
-  public get(options?: FindOptions<Attributes<M>>) {
+  public get(options?: FindOptions<Attributes<M>>, fn?: FnRecord<M>) {
 
     return async (req: Request, res: Response) => {
 
@@ -117,7 +120,7 @@ export class Controller<M extends Model<M>> {
 
       if (record) {
 
-        return Responses.data(res, record.toJSON());
+        return Responses.data(res, fn ? fn(record) : record.toJSON());
       }
 
       if (record === null) {
