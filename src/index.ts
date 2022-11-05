@@ -14,7 +14,7 @@ import {
 
 import { SampleController } from "./controllers";
 
-(async () => {
+const main = async () => {
 
   const app = new App(
     [
@@ -34,4 +34,6 @@ import { SampleController } from "./controllers";
 
   await app.listen();
 
-})();
+};
+
+main().catch(console.log);

@@ -7,16 +7,13 @@ export class Sample extends Model {
   public name!: string;
 }
 
-if (sequelize) {
+Sample.init({
 
-  Sample.init({
+  name: DataTypes.STRING,
 
-    name: DataTypes.STRING,
+}, {
 
-  }, {
+  sequelize,
+  modelName: "sample",
 
-    sequelize,
-    modelName: "sample",
-
-  });
-}
+});

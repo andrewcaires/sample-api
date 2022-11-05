@@ -20,6 +20,7 @@ export class SampleController extends ModelController<Sample> {
   public intialize() {
 
     this.setModel(Sample);
+
     this.router.use(this.auth);
 
     this.router.get("/", this.read(), this.all().bind(this));
