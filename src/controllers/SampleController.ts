@@ -33,10 +33,12 @@ export class SampleController extends ControllerBase {
 
     if (record) {
 
-      return Responses.data(res, { id: record.id });
+      Responses.data(res, { id: record.id });
+
+      return;
     }
 
-    return Responses.error(res, "Internal Server Error");
+    Responses.error(res, "Internal Server Error");
   }
 
   @Get()
@@ -48,10 +50,12 @@ export class SampleController extends ControllerBase {
 
     if (records) {
 
-      return Responses.list(res, records.map((record) => record.toJSON()));
+      Responses.list(res, records.map((record) => record.toJSON()));
+
+      return;
     }
 
-    return Responses.error(res, "Internal Server Error");
+    Responses.error(res, "Internal Server Error");
   }
 
   @Delete("/:id")
@@ -68,10 +72,12 @@ export class SampleController extends ControllerBase {
 
     if (rows) {
 
-      return Responses.success(res, "OK");
+      Responses.success(res, "OK");
+
+      return;
     }
 
-    return Responses.notfound(res, "Record not found");
+    Responses.notfound(res, "Record not found");
   }
 
   @Get("/:id")
@@ -84,15 +90,19 @@ export class SampleController extends ControllerBase {
 
     if (record) {
 
-      return Responses.data(res, record.toJSON());
+      Responses.data(res, record.toJSON());
+
+      return;
     }
 
     if (record === null) {
 
-      return Responses.notfound(res, "Record not found");
+      Responses.notfound(res, "Record not found");
+
+      return;
     }
 
-    return Responses.error(res, "Internal Server Error");
+    Responses.error(res, "Internal Server Error");
   }
 
   @Put("/:id")
@@ -119,9 +129,11 @@ export class SampleController extends ControllerBase {
 
     if (count) {
 
-      return Responses.success(res, "OK");
+      Responses.success(res, "OK");
+
+      return;
     }
 
-    return Responses.success(res, "Record not changed");
+    Responses.success(res, "Record not changed");
   }
 }
