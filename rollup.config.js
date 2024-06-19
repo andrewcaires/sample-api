@@ -12,9 +12,12 @@ const header = `/*!
 
 const input = "src/index.ts";
 
-const external = [...Object.keys(pkg.dependencies)];
+const node = [];
+const external = [...node, ...Object.keys(pkg.dependencies)];
 
 const banner = () => ({ renderChunk: (code) => header + "\n" + code });
+
+const tsc = () => typescript({ module: "esnext", tsconfig: "./tsconfig.json" });
 
 export default [
   {
@@ -24,7 +27,7 @@ export default [
       { file: pkg.main, format: "cjs", exports: "named" },
     ],
     plugins: [
-      typescript({ module: "esnext", tsconfig: "./tsconfig.json" }),
+      tsc(),
       commonjs({ extensions: [".js", ".ts"] }),
       banner(),
     ],

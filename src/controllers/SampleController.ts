@@ -1,18 +1,12 @@
 import { ControllerBase } from "@andrewcaires/api";
-import { Body, Controller, Delete, Extends, Get, Middleware, Params, Post, Put, Res, Responses } from "@andrewcaires/express";
+import { Body, Context, Controller, Ctx, Delete, Extends, Get, Middleware, Params, Post, Put } from "@andrewcaires/express";
 import { Validation } from "@andrewcaires/utils.js";
-import { Response } from "express";
 
-import { Sample } from "../models/Sample";
+import { Sample } from "../models";
 
 @Controller("/sample")
 @Extends(ControllerBase)
 export class SampleController extends ControllerBase {
-
-  public error(error: any) {
-
-    console.log(error.message);
-  }
 
   @Post()
   @Middleware("validation", {
@@ -21,8 +15,8 @@ export class SampleController extends ControllerBase {
 
   })
   public async recordAdd(
-    @Body() body: any,
-    @Res() res: Response
+    @Ctx() ctx: Context,
+    @Body() body: any
   ) {
 
     const record = await Sample.create({
@@ -33,35 +27,31 @@ export class SampleController extends ControllerBase {
 
     if (record) {
 
-      Responses.data(res, { id: record.id });
-
-      return;
+      return ctx.json({ id: record.id });
     }
 
-    Responses.error(res, "Internal Server Error");
+    ctx.error("Internal Server Error");
   }
 
   @Get()
   public async recordAll(
-    @Res() res: Response
+    @Ctx() ctx: Context,
   ) {
 
     const records = await Sample.findAll().catch(this.error);
 
     if (records) {
 
-      Responses.list(res, records.map((record) => record.toJSON()));
-
-      return;
+      return ctx.json(records.map((record) => record.toJSON()));
     }
 
-    Responses.error(res, "Internal Server Error");
+    ctx.error("Internal Server Error");
   }
 
   @Delete("/:id")
   public async recordDel(
-    @Params("id") id: string,
-    @Res() res: Response
+    @Ctx() ctx: Context,
+    @Params("id") id: string
   ) {
 
     const rows = await Sample.destroy({
@@ -72,37 +62,31 @@ export class SampleController extends ControllerBase {
 
     if (rows) {
 
-      Responses.success(res, "OK");
-
-      return;
+      return ctx.success("OK");
     }
 
-    Responses.notfound(res, "Record not found");
+    ctx.notFound("Record not found");
   }
 
   @Get("/:id")
   public async recordGet(
-    @Params("id") id: string,
-    @Res() res: Response
+    @Ctx() ctx: Context,
+    @Params("id") id: string
   ) {
 
     const record = await Sample.findByPk(id).catch(this.error);
 
     if (record) {
 
-      Responses.data(res, record.toJSON());
-
-      return;
+      return ctx.json(record.toJSON());
     }
 
     if (record === null) {
 
-      Responses.notfound(res, "Record not found");
-
-      return;
+      return ctx.notFound("Record not found");
     }
 
-    Responses.error(res, "Internal Server Error");
+    ctx.error("Internal Server Error");
   }
 
   @Put("/:id")
@@ -112,9 +96,9 @@ export class SampleController extends ControllerBase {
 
   })
   protected async recordSet(
+    @Ctx() ctx: Context,
     @Params("id") id: string,
-    @Body() body: any,
-    @Res() res: Response
+    @Body() body: any
   ) {
 
     const [count] = await Sample.update({
@@ -129,11 +113,9 @@ export class SampleController extends ControllerBase {
 
     if (count) {
 
-      Responses.success(res, "OK");
-
-      return;
+      return ctx.success("OK");
     }
 
-    Responses.success(res, "Record not changed");
+    ctx.success("Record not changed");
   }
 }
