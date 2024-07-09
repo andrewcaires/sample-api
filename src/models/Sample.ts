@@ -1,4 +1,4 @@
-import { sequelize } from "@andrewcaires/api";
+import { Env, sequelize } from "@andrewcaires/api";
 import { DataTypes, Model } from "sequelize";
 
 export class Sample extends Model {
@@ -14,6 +14,6 @@ Sample.init({
 }, {
 
   sequelize,
-  modelName: "sample",
+  modelName: Env.API_DB_PREFIX + "sample",
 
 });

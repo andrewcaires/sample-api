@@ -14,7 +14,7 @@ export class SampleController extends ControllerBase {
     name: Validation.string().required(),
 
   })
-  public async recordAdd(
+  public async add(
     @Ctx() ctx: Context,
     @Body() body: any
   ) {
@@ -34,7 +34,7 @@ export class SampleController extends ControllerBase {
   }
 
   @Get()
-  public async recordAll(
+  public async all(
     @Ctx() ctx: Context,
   ) {
 
@@ -49,7 +49,7 @@ export class SampleController extends ControllerBase {
   }
 
   @Delete("/:id")
-  public async recordDel(
+  public async del(
     @Ctx() ctx: Context,
     @Params("id") id: string
   ) {
@@ -69,7 +69,7 @@ export class SampleController extends ControllerBase {
   }
 
   @Get("/:id")
-  public async recordGet(
+  public async get(
     @Ctx() ctx: Context,
     @Params("id") id: string
   ) {
@@ -95,7 +95,7 @@ export class SampleController extends ControllerBase {
     name: Validation.string().required(),
 
   })
-  protected async recordSet(
+  protected async set(
     @Ctx() ctx: Context,
     @Params("id") id: string,
     @Body() body: any
