@@ -1,19 +1,22 @@
-import { Env, sequelize } from "@andrewcaires/api";
-import { DataTypes, Model } from "sequelize";
+import { conn, Model } from "@andrewcaires/api";
+import { AutoIncrement, CreatedAt, Database, Integer, NotNull, PrimaryKey, String, TableName, UpdatedAt } from "@andrewcaires/sequelize";
 
+@Database(conn)
+@TableName("sample")
 export class Sample extends Model {
 
-  public id!: number;
-  public name!: string;
+  @Integer()
+  @PrimaryKey
+  @NotNull
+  @AutoIncrement
+  declare id: number;
+
+  @String()
+  declare name: string;
+  
+  @CreatedAt
+  declare createdAt: Date;
+
+  @UpdatedAt
+  declare updatedAt: Date;
 }
-
-Sample.init({
-
-  name: DataTypes.STRING,
-
-}, {
-
-  sequelize,
-  modelName: Env.API_DB_PREFIX + "sample",
-
-});

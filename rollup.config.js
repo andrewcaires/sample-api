@@ -19,6 +19,16 @@ const banner = () => ({ renderChunk: (code) => header + "\n" + code });
 
 const tsc = () => typescript({ module: "esnext", tsconfig: "./tsconfig.json" });
 
+const onwarn = (warning, rollupWarn) => {
+
+  if (warning.code == "CIRCULAR_DEPENDENCY") {
+
+    return;
+  }
+
+  rollupWarn(warning);
+};
+
 export default [
   {
     input,
@@ -31,5 +41,6 @@ export default [
       commonjs({ extensions: [".js", ".ts"] }),
       banner(),
     ],
+    onwarn,
   },
 ];

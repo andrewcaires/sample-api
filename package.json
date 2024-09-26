@@ -13,20 +13,20 @@
   "author": "Andrew Caires",
   "license": "MIT",
   "dependencies": {
-    "@andrewcaires/api": "^3.2.6",
-    "@andrewcaires/express": "^1.1.10",
-    "@andrewcaires/fetch": "^1.0.8",
-    "@andrewcaires/node": "^1.1.3",
-    "@andrewcaires/utils.js": "0.3.1",
-    "sequelize": "^6.37.3"
+    "@andrewcaires/api": "^4.0.0",
+    "@andrewcaires/express": "^1.1.11",
+    "@andrewcaires/fetch": "^1.0.10",
+    "@andrewcaires/node": "^1.1.5",
+    "@andrewcaires/sequelize": "^1.0.1",
+    "@andrewcaires/utils.js": "0.3.5"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^26.0.1",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.14.10",
-    "eslint": "^9.6.0",
-    "rollup": "^4.18.1",
-    "tslib": "^2.6.3",
-    "typescript-eslint": "^8.0.0-alpha.41"
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-typescript": "^12.1.0",
+    "@types/node": "^22.7.2",
+    "eslint": "^9.11.1",
+    "rollup": "^4.22.4",
+    "tslib": "^2.7.0",
+    "typescript-eslint": "^8.7.0"
   }
 }
