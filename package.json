@@ -2,10 +2,12 @@
   "name": "sample-api",
   "version": "0.0.0",
   "description": "This is Sample API",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "dev": "tsx-dev --watch --clear ./src/index.ts",
     "build": "rollup --bundleConfigAsCjs -c rollup.config.js",
-    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts"
+    "serve": "node ./dist/index.js"
   },
   "keywords": [
     "api"
@@ -13,20 +15,21 @@
   "author": "Andrew Caires",
   "license": "MIT",
   "dependencies": {
-    "@andrewcaires/api": "^4.0.0",
-    "@andrewcaires/express": "^1.1.11",
-    "@andrewcaires/fetch": "^1.0.10",
-    "@andrewcaires/node": "^1.1.5",
-    "@andrewcaires/sequelize": "^1.0.1",
-    "@andrewcaires/utils.js": "0.3.5"
+    "@andrewcaires/api": "^4.1.1",
+    "@andrewcaires/express": "^1.2.2",
+    "@andrewcaires/fetch": "^1.1.0",
+    "@andrewcaires/node": "^1.2.0",
+    "@andrewcaires/sequelize": "^1.1.2",
+    "@andrewcaires/utils.js": "0.4.0",
+    "mariadb": "^3.3.2"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.0",
-    "@rollup/plugin-typescript": "^12.1.0",
-    "@types/node": "^22.7.2",
-    "eslint": "^9.11.1",
-    "rollup": "^4.22.4",
-    "tslib": "^2.7.0",
-    "typescript-eslint": "^8.7.0"
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.12.0",
+    "rollup": "^4.24.0",
+    "tslib": "^2.8.0",
+    "typescript-eslint": "^8.9.0"
   }
 }

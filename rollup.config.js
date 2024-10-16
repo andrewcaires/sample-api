@@ -34,7 +34,7 @@ export default [
     input,
     external,
     output: [
-      { file: pkg.main, format: "cjs", exports: "named" },
+      { file: pkg.main, format: "es" },
     ],
     plugins: [
       tsc(),

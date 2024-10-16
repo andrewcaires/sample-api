@@ -1,7 +1,7 @@
-import { conn, Model } from "@andrewcaires/api";
+import { database, Model } from "@andrewcaires/api";
 import { AutoIncrement, CreatedAt, Database, Integer, NotNull, PrimaryKey, String, TableName, UpdatedAt } from "@andrewcaires/sequelize";
 
-@Database(conn)
+@Database(database)
 @TableName("sample")
 export class Sample extends Model {
 
