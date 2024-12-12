@@ -15,21 +15,21 @@
   "author": "Andrew Caires",
   "license": "MIT",
   "dependencies": {
-    "@andrewcaires/api": "^4.1.1",
+    "@andrewcaires/api": "^4.2.0",
     "@andrewcaires/express": "^1.2.2",
     "@andrewcaires/fetch": "^1.1.0",
-    "@andrewcaires/node": "^1.2.0",
-    "@andrewcaires/sequelize": "^1.1.2",
-    "@andrewcaires/utils.js": "0.4.0",
-    "mariadb": "^3.3.2"
+    "@andrewcaires/node": "^1.2.4",
+    "@andrewcaires/sequelize": "^1.2.0",
+    "@andrewcaires/utils.js": "0.4.2",
+    "mariadb": "^3.4.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-typescript": "^12.1.1",
-    "@types/node": "^22.7.5",
-    "eslint": "^9.12.0",
-    "rollup": "^4.24.0",
-    "tslib": "^2.8.0",
-    "typescript-eslint": "^8.9.0"
+    "@types/node": "^22.10.2",
+    "eslint": "^9.16.0",
+    "rollup": "^4.28.1",
+    "tslib": "^2.8.1",
+    "typescript-eslint": "^8.18.0"
   }
 }

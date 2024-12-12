@@ -1,22 +1,23 @@
-import { database, Model } from "@andrewcaires/api";
-import { AutoIncrement, CreatedAt, Database, Integer, NotNull, PrimaryKey, String, TableName, UpdatedAt } from "@andrewcaires/sequelize";
+import { database, Migrate, Model } from "@andrewcaires/api";
+import { CreatedAt, Database, DeletedAt, Id, String, TableName, UpdatedAt } from "@andrewcaires/sequelize";
 
 @Database(database)
 @TableName("sample")
+@Migrate("0.0.0")
 export class Sample extends Model {
 
-  @Integer()
-  @PrimaryKey
-  @NotNull
-  @AutoIncrement
+  @Id()
   declare id: number;
 
   @String()
   declare name: string;
   
   @CreatedAt
-  declare createdAt: Date;
+  declare created_at: Date;
 
   @UpdatedAt
-  declare updatedAt: Date;
+  declare updated_at: Date;
+
+  @DeletedAt
+  declare deleted_at: Date;
 }
