@@ -16,20 +16,20 @@
   "license": "MIT",
   "dependencies": {
     "@andrewcaires/api": "^4.3.0",
-    "@andrewcaires/express": "^1.2.3",
+    "@andrewcaires/express": "^1.2.4",
     "@andrewcaires/fetch": "^1.1.0",
     "@andrewcaires/node": "^1.2.5",
-    "@andrewcaires/sequelize": "^1.2.1",
-    "@andrewcaires/utils.js": "0.4.3",
-    "mariadb": "^3.4.0"
+    "@andrewcaires/sequelize": "^1.2.2",
+    "@andrewcaires/utils.js": "0.4.6",
+    "mariadb": "^3.4.1"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/node": "^22.10.10",
-    "eslint": "^9.19.0",
-    "rollup": "^4.32.0",
+    "@types/node": "^22.14.0",
+    "eslint": "^9.24.0",
+    "rollup": "^4.39.0",
     "tslib": "^2.8.1",
-    "typescript-eslint": "^8.22.0"
+    "typescript-eslint": "^8.29.0"
   }
 }
