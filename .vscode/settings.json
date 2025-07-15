@@ -1,5 +1,13 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    ".env.dev": ".env.*",
+    "tsconfig.json": "tsconfig.*.json, rollup.config.js",
+    "eslint.config.mjs": ".eslint*, eslint*, .prettier*, prettier*",
+    "package.json": "package-lock.json"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
